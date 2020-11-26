@@ -1,0 +1,67 @@
+body {
+    background-color: black;
+    color: gray;
+}
+
+a { color: orange; }  /* color (base) */
+a:hover { color: gold }  /* bright */
+
+a .track { color: rgba(255,255,255,0.3) }
+
+.border { border: 1px solid rgba(255,255,255,0.2) }
+
+.dim1 { color: rgba(0,0,0,0.1) }
+.dim2 { color: rgba(0,0,0,0.25) }
+.dim3 { color: rgba(0,0,0,0.5) }
+
+.dark { color: darkorange }
+.bright { color: gold }
+.highlight { color: white }
+
+kbd {
+    background: rgba(255,255,255,0.3);
+    color: white;
+}
+
+div#help {
+    background: rgba(0,0,0,0.9);
+    color: gray;
+}
+
+div#info a {
+    background-color: rgba(255,255,255,0.25);
+    color: black;
+}
+
+div#info #track {
+    background-color: darkorange;
+    color: black;
+}
+
+div#info #total_tracks {
+    background-color: black;
+    color: darkorange;
+}
+
+div#related {
+    background-color: rgba(0,0,0,0.9);
+    color: white;
+}
+
+table#tracklist .track_num {
+    color: rgba(255,255,255,0.15);
+}
+
+table#tracklist tr.active a {
+    color: darkorange;
+}
+table#tracklist tr:hover a.track {
+    color: orange;
+}
+table#tracklist tr:hover .track_num {
+    color: darkorange;
+}
+
+#title {
+    text-shadow: 0px 0px 16px;
+}

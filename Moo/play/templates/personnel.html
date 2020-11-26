@@ -1,0 +1,20 @@
+{% if personnel | length > 1 %}
+
+<style>
+div#personnel {
+    margin: 8px;
+    text-align: left;
+    color: gray;
+}
+</style>
+
+<div id="personnel">
+  <p>Personnel ({{ personnel | length }})</p>
+  <ul>
+    {% for person in personnel | sort %}
+    <li>{{ person }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endif %}

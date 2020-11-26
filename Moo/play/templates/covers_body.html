@@ -1,0 +1,102 @@
+{% if request.path.startswith('/covers') %}
+{% set size = '256px' %}
+{% else %}
+{% set recent = index[:100] %}
+{% set classes = "hidden" %}
+{% set size = '120px' %}
+{% endif %}
+
+<style>
+div#covers {
+    text-align: center;
+    margin: auto;
+}
+div#covers img {
+    width: {{ size }};
+    height: {{ size }};
+}
+div#covers .album {
+    display: inline-block;
+    margin: 2px;
+    width: {{ size }};
+    height: {{ size }};
+    overflow: hidden;
+}
+</style>
+
+<div id="covers" class="{{ classes }}">
+
+  {% if recent %}
+
+  <h3>
+    Recently added {{ recent | length }} / 
+    <a href="/covers">{{ "{:,}".format(index | length) }}</a>
+     &#x1f9a5;
+  </h3>
+  {% for path in recent %}
+  {% set href = path | replace(base + '/', '') %}
+  <a class="album" 
+     href="/album/{{ href | urlencode }}" 
+     title="{{ path }}">
+    <img src="/img/{{ href | urlencode }}">
+    {{ path.name }}</a>
+  {% endfor %}
+
+  {% else %}
+
+  <h1>
+    {{ "{:,}".format(index | length) }}
+    {% if alpha %}"{{ alpha }}"{% endif %}
+    <a href="/">albums</a>
+    &#x1f9a5;
+  </h1>
+
+  <p id="alpha" class="">
+    <a href="/covers/A">A</a>
+    <a href="/covers/B">B</a>
+    <a href="/covers/C">C</a>
+    <a href="/covers/D">D</a>
+    <a href="/covers/E">E</a>
+    <a href="/covers/F">F</a>
+    <a href="/covers/G">G</a>
+    <a href="/covers/H">H</a>
+    <a href="/covers/I">I</a>
+    <a href="/covers/J">J</a>
+    <a href="/covers/K">K</a>
+    <a href="/covers/L">L</a>
+    <a href="/covers/M">M</a>
+    <br>
+    <a href="/covers/N">N</a>
+    <a href="/covers/O">O</a>
+    <a href="/covers/P">P</a>
+    <a href="/covers/Q">Q</a>
+    <a href="/covers/R">R</a>
+    <a href="/covers/S">S</a>
+    <a href="/covers/T">T</a>
+    <a href="/covers/U">U</a>
+    <a href="/covers/V">V</a>
+    <a href="/covers/W">W</a>
+    <a href="/covers/X">X</a>
+    <a href="/covers/Y">Y</a>
+    <a href="/covers/Z">Z</a>
+  </p>
+
+  {% for path in index %}
+  {% set href = path | replace(base + '/', '') %}
+  <a class="album" 
+     href="/album/{{ href | urlencode }}" 
+     title="{{ path }}">
+    <img src="/img/{{ href | urlencode }}">
+    {{ path.name }}</a>
+  {% endfor %}
+
+  {% endif %}
+
+  <p>
+    <a href="{{ config.WWW }}" target="_blank">{{ config.PACKAGE }}
+      {{ config.VERSION }}</a>
+    <span id="heart">&#x2764;</span>
+    {{ config.AUTHOR }}
+  </p>
+
+</div>

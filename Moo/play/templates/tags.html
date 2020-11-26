@@ -1,0 +1,18 @@
+<table id="tags" class="border data hidden">
+  <tr>
+    <th colspan="2">
+      "{{ track.title }}" tags
+      <kbd class="btn" onclick="toggle_hidden('tags')">g</kbd>
+    </th>
+  </tr>
+  {% if tags %}
+  {% for item in tags | sort %}
+  <tr>
+    <td>{{ item }}</td>
+    <td>{{ tags[item] }}</td>
+  </tr>
+  {% endfor %}
+  {% else %}
+  <tr><td>No tags found.</td></tr>
+  {% endif %}
+</table>

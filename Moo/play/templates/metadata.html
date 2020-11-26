@@ -1,0 +1,16 @@
+<table id="metadata" class="border hidden round data">
+  <tr>
+    <th colspan="2">
+      "{{ track.title }}" metadata 
+      <kbd class="btn" onclick="toggle_hidden('metadata')">d</kbd>
+    </th>
+  </tr>
+
+  {% for field in track | sort %}
+  <tr>
+    <td>{{ field }}</td>
+    <td>{{ track[field] }}</td>
+  </tr>
+  {% endfor %}
+
+</table>

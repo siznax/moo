@@ -1,0 +1,140 @@
+{% if request.path == '/' %}
+    {% set style="float: right" %}
+    {% set classes = "border left round" %}
+{% else %}
+    {% set classes = "border hidden left round" %}
+{% endif %}
+
+<style>
+div#help {
+    margin: 16px;
+    padding: 0 16px;
+    background-color: #111;
+}
+div#help img {
+    filter: grayscale(0);
+}
+</style>
+
+
+<div id="help"  class="{{ classes }}" style="{{ style }}">
+
+  <p>Help <kbd onclick="toggle_hidden('help')">h</kbd></p>
+
+  <p>
+    <div>
+      <a class="pill" href="/" title="Go to album index">&#x1f9a5;</a>
+      Go to album <a href="/">Index</a></div>
+    <div>
+      <a class="pill" href="/random" title="Go to random album">
+        <img alt="die" src="/static/die.png"></a>
+      Go to <a href="/random">random album</a></div>
+    <div>
+      <a class="pill" onclick="dark()">&#x1f506;</a>
+      Toggle dimmer</div>
+  </p>
+
+  <p id="keyboard">Keyboard shortcuts</p>
+
+  <p>
+    <kbd>h</kbd> show this help
+  </p>
+
+  <p>
+    <div><kbd>c</kbd>go to album <b>covers</b></div>
+    <div><kbd>i</kbd>go to album <b>index</b></div>
+    <div><kbd>r</kbd>go to <b>random</b> album</div>
+  </p>
+
+  <p>
+    <div><kbd>1</kbd>play track <b>1</b></div>
+    <div><kbd>0</kbd>play track <b>10</b></div>
+    <div><kbd>n</kbd>play <b>next</b> track</div>
+    <div><kbd>p</kbd>play <b>previous</b> track</div>
+    <div><kbd>t</kbd>play random <b>track</b></div>
+  </p>
+  <p>
+    <div><kbd>up</kbd>play <b>previous</b> track</div>
+    <div><kbd>down</kbd>play <b>next</b> track</div>
+    <div><kbd>right</kbd>play <b>next</b> track</div>
+    <div><kbd>left</kbd>play <b>previous</b> track</div>
+  </p>
+
+  <p>
+    <div><kbd>m</kbd>show <b>more</b> (related) albums</div>
+    <div><kbd>c</kbd>show <b>classical</b></div>
+  </p>
+
+  <p>
+    <div><kbd>d</kbd>toggle meta-<b>data</b></div>
+    <div><kbd>g</kbd>toggle <b>tags</b></div>
+  </p>
+
+  <p id="keyboard">Encoder/codec</p>
+
+  <p>
+    <div>
+      <span class="pill"><img alt="Safari" src="/static/safari.png"></span>
+      Apple Lossless <i>requires Safari</i></div>
+
+    <div>
+      <span class="pill"><img alt="FFmpeg" src="/static/ffmpeg.png"></span>
+      Encoded by <a href="https://ffmpeg.org"
+                    target="_blank">FFmpeg</a></div>
+
+    <div>
+      <span class="pill"><img alt="iTunes" src="/static/itunes.png"></span>
+      Encoded by iTunes
+      or <a href="https://music.apple.com/">whatever</a></div>
+
+    <div>
+      <span class="pill"><img alt="LAME" src="/static/lame.gif"></span>
+      Encoded by <a href="https://lame.sourceforge.io/"
+                    target="_blank">LAME</a></div>
+  </p>
+
+  <p>Track Links</p>
+
+  <p>
+    <div>
+      <span class="pill"><img alt="web" src="/static/web.png"></span>
+      Go to web link from media tag</div>
+
+    <div>
+      <span class="pill"><img alt="Discogs" src="/static/discogs.png"></span>
+      Go to <a href="https://discogs.com/"
+               target="_blank">Discogs</a> album</div>
+
+    <div>
+      <span class="pill">
+        <img alt="Genius.com" src="/static/genius.com.png"></span>
+      Go to <a href="https://genius.com/"
+               target="_blank">Genius.com</a> lyrics</div>
+
+    <div>
+      <span class="pill">
+        <img alt="Internet Archive" src="/static/archive.org.jpg"></span>
+      Go to <a href="https://archive.org/"
+               target="_blank">Internet Archive</a> search results</div>
+
+    <div>
+      <span class="pill">
+        <img alt="MusicBrainz" src="/static/music-brainz.png"></span>
+      Go to <a href="https://musicbrainz.org/"
+               target="_blank">MusicBrainz</a> release</div>
+
+    <div>
+      <span class="pill"><img alt="YouTube" src="/static/youtube.png"></span>
+      Go to <a href="https://youtube.com/" 
+               target="_blank">YouTube</a> video</div>
+
+    <div><a class="pill help">?</a> Show this help</div>
+  </p>
+
+  <p style="padding-top: 16px">
+    <b>moo</b>
+    <a href="{{ config.WWW }}" target="_blank">{{ config.VERSION }}</a>
+    <span id="heart">&#x2764;</span>
+    {{ config.AUTHOR }}
+  </p>
+</div>

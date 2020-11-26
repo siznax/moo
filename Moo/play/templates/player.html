@@ -1,0 +1,55 @@
+<style>
+div#player {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+
+    padding: 8px;
+    padding-bottom: 0;
+
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    overflow: hidden;
+    text-align: left;
+
+    background-color: #eee;
+}
+#artist {
+    margin-top: 16px;
+    padding: 4px 0;
+    font-size: 20px;
+    font-weight: 100;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+#album {
+    font-size: 24px;
+    font-style: italic;
+}
+#title {
+    font-size: 32px;
+    cursor: pointer;
+}
+</style>
+
+
+<div id="player" class="">
+  {% include "widget.html" %}
+
+  <div id="artist" onclick="toggle_hidden('related')">
+    {{ track.artist or track.album_artist or 'Unknown' }}</div>
+
+  <div>
+    <a id="album" href="/album/{{ alkey | urlencode }}">
+      {{ track.album or 'Unknown' }}</a></div>
+
+  <div id="title" 
+       class="{% if autoplay %}glow{% endif %}" 
+       onclick="toggle_hidden('metadata')">{{ track.title }}</div>
+
+  {% include "audio.html" %}
+  {% include "info.html" %}
+  {% include "links.html" %}
+</div>
