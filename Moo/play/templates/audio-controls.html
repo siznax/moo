@@ -1,0 +1,7 @@
+{% if request.path.startswith('/track') %}
+{% set autoplay = 'autoplay' %}
+{% endif %}
+
+<audio controls {{ autoplay }}>
+  <source src="{{ track.src }}" type="{{ track.type }}"/>
+</audio>

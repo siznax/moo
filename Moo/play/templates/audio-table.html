@@ -1,0 +1,75 @@
+<div id="audio-table" class="bg-white">
+
+  <table id="album">
+
+    <tr>
+      <td id="track-title" class="clr-a">
+        {{ track.title }}
+      </td>
+    </tr>
+
+    {% set artist = track.artist or track.album_artist or "None" %}
+
+    {% if (artist | length + track.album | length) < 32 %}
+    {% set dash = True %}                                                     
+    {% endif %}                                                     
+
+    {% if artist | length > 32 %}
+    {% set artist = artist.split(';')[0].split(',')[0] %}
+    {% endif %}
+
+    <tr>
+      <td>
+        <a id="track-artist"
+           class="clr-b sans-serif"
+           href="/artist/{{ artist }}"
+           target="_blank">{{ artist  }}</a>
+      </td>
+    </tr>
+
+    {% set album = track.album or "<small>ALBUM</small>" | safe %}
+    
+    <tr>
+      <td id="track-album">
+        <i>
+          <a class="clr-c"
+             href="/album{{ slash }}{{ alkey | urlencode }}"
+             >{{ album }}</a></i>
+      </td>
+    </tr>
+    
+    <tr>
+      <td>
+        {% include "audio-controls.html" %}
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <a href="/"
+           class="emoji"
+           target="_blank">{{ emoji.app | safe }}</a>
+
+        <a href="#" 
+           class="emoji hr-75"
+           onclick="gotoPrev()">{{ emoji.prev | safe }}</a>
+
+        <span 
+           id="track-number"
+           class="emoji clr-c">
+          {%- if track.disc %}{{ track.disc }}.{% endif -%}
+          {{ "{:02d}".format(track.track | int) }}</span>
+
+        <a href="#" 
+           class="emoji hr-75"
+           onclick="gotoNext()">{{ emoji.next | safe }}</a>
+
+        <a href="/random"
+           class="emoji">{{ emoji.random | safe }}</a>
+
+      </td>
+    </tr>
+
+  </table>
+
+</div>

@@ -1,0 +1,13 @@
+<div id="station-buttons">
+  {% for station in stations %}
+
+  {% if station == station %}
+  <b class="button">{{ station }}</b>
+  {% else %}
+  <a class="button" href="/station/{{ station }}">{{ station }}</a>
+  {% endif %}
+
+  {% endfor %}
+</div>
+
+

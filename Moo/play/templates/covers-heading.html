@@ -1,0 +1,17 @@
+{% if request.path != '/' %}
+{% set arg = request.path.split('/')[-1] %}
+{% endif %}
+
+<p id="covers-heading">
+  <span class="box">
+    <span>{{ "{:,}".format(albums | length) }}</span>
+    {% if arg %}<b style="margin: 0 4px">{{ arg }}</b>{% endif %}
+    <span>albums</span>
+  </span>
+</p>
+
+<link rel="stylesheet" type="text/css" href="/static/counts.css"></link>
+
+{% for counter in counts %}
+{% include "counter.html" %}
+{% endfor %}

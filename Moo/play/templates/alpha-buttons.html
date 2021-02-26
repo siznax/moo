@@ -1,0 +1,13 @@
+<p>
+
+  {% for letter in alpha | sort %}
+
+  {% if request.path == "/alpha/" + letter %}
+  <b>{{ letter }}</b>
+  {% else %}
+  <a href="/alpha/{{ letter }}">{{ letter }}</a>
+  {% endif %}
+
+  {% endfor %}
+
+</p>

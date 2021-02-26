@@ -1,0 +1,46 @@
+<p class="clr-4">
+
+  <a class="emoji">{{ emoji.app | safe }}</a>
+
+  <span style="margin-right: 8px">
+    <a class="button clr-5"
+       style="margin-right: 0"
+       href="/">Albums</a>
+    <span>{{ "{:,}".format(total) }}</span>
+  </span>
+
+  <span style="margin-right: 8px">
+    <a href="#"
+       class="button clr-5"
+       style="margin-right: 0"
+       onclick="toggle_hidden('artist-counts');">Artists</a>
+    <span>{{ "{:,}".format(counts['artist'] | length) }}</span>
+  </span>
+
+  <span style="margin-right: 8px">
+    <a href="#"
+       class="button clr-5" 
+       style="margin-right: 0" 
+       onclick="toggle_hidden('genre-counts');">Genres</a>
+    <span>{{ "{:,}".format(counts['genre'] | length) }}</span>
+  </span>
+
+  <span style="margin-right: 8px">
+    <a href="#"
+       class="button clr-5"
+       style="margin-right: 0"
+       onclick="toggle_hidden('year-counts');">Years</a>
+    <span>{{ "{:,}".format(counts['year'] | length) }}</span>
+  </span>
+
+  <span style="margin-right: 8px">
+    <a href="#"
+       class="button clr-5"
+       style="margin-right: 0"
+       onclick="toggle_hidden('format-counts')">Formats</a>
+    <span>{{ "{:,}".format(counts['format'] | length) }}</span>
+  </span>
+
+  <span><a class="emoji" href="/docs">{{ emoji.help | safe }}</a></span>
+
+</p>
