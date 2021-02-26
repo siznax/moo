@@ -1,0 +1,17 @@
+<div style="position: fixed; top: 8px; right: 12px;">
+  <span
+     id="time"
+     class="clr-5"></span>
+  {%- 
+  if request.path.startswith('/album')
+  or request.path.startswith('/track') 
+  or request.path.startswith('/docs') 
+  -%}
+  <a href="/"
+     class="button"
+     style="margin-left: 8px">&times;</a>
+  {% else %}
+  <a href="/random"
+     style="margin-left: 8px;">{{ emoji.random | safe }}</a>
+  {%- endif -%}
+</div>

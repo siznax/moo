@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div style="text-align: center;">
+  <div 
+     class="bg-1 clr-5"
+     style="margin: 32px;
+            padding: 32px;
+            font-size: 24px;
+            border-radius: 8px;
+            width: 420px;
+            margin-left: auto;
+            margin-right: auto;">
+    <span style="margin-right: 0.5em;">
+      {{ emoji.notfound | safe }}
+    </span>
+    404 Page Not Found
+  </div>
+</div>
+
+{% endblock %}

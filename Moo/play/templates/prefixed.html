@@ -1,0 +1,18 @@
+{% if prefixed %}
+<div 
+  style="margin-bottom: 1.2em;
+          padding: 0.1em 0;
+          background-color: yellow;
+          border-radius: 8px;">
+
+  {% for prefix in prefixed %}
+  <ul>
+    <span>{{ prefix }}</span>
+    {% for item in prefixed[prefix] %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+
+</div>
+{% endif %}
