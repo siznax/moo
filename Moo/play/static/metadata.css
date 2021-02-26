@@ -1,0 +1,29 @@
+#links {
+    text-align: left;
+}
+
+#links div {
+    width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 0.6em;
+}
+
+#links img {
+    height: 1.2em;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+table#metadata tr td {
+    padding: 2px 4px;
+}
+
+table#metadata tr td:first-child {
+    font-weight: bold;
+    text-align: right;
+}
+
+table#metadata tr td:nth-child(2) {
+    word-break: break-all;
+}

@@ -1,0 +1,21 @@
+div#artists, div#genres, div#years, div#formats {
+    display: none;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    text-align: center;
+}
+
+.count-card {
+    display: inline-block;
+
+    margin: 4px;
+    padding: 4px;
+    border-radius: 4px;
+
+    width: 200px;
+
+    text-align: left;
+    vertical-align: top;
+}

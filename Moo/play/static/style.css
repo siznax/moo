@@ -1,0 +1,121 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+pre {
+    margin-left: 2em;
+    padding: 1em;
+
+    background-color: whitesmoke;
+    border-radius: 8px;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+
+    border-collapse: collapse;
+    text-align: left;
+}
+
+table td {
+    vertical-align: top;
+}
+
+
+.bg { background-color: lavender; }
+
+.bg-black { background-color: black; }
+.bg-white { background-color: white; }
+
+.clr-black { color: black; }
+.clr-white { color: white; }
+
+
+.box {
+    display: inline-block;
+
+    padding: 4px 8px;
+
+    background-color: lavender;
+    border-radius: 4px;
+}
+
+.button {
+    display: inline-block;
+
+    margin-bottom: 8px;
+    margin-left: 4px;
+    margin-right: 4px;
+
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: lavender;
+}
+
+.center {
+    text-align: center;
+}
+
+.emoji {
+    margin: 0;
+    padding: 0;
+    margin-left: 4px;
+}
+
+.encoding {
+    padding: 2px 4px;
+}
+
+
+/** Default colors **/
+
+.button, .count-card, .encoding {
+    background-color: lavender;
+}
+
+
+/** Font utilities **/
+
+
+.sans-serif {
+    font-family: sans-serif;
+}
+
+
+/** Color utilities **/
+
+
+.hr-30 {
+    filter: hue-rotate(30deg);
+    -webkit-filter: hue-rotate(30deg); 
+}
+.hr-45 {
+    filter: hue-rotate(45deg);
+    -webkit-filter: hue-rotate(45deg); 
+}
+.hr-60 {
+    filter: hue-rotate(60deg);
+    -webkit-filter: hue-rotate(60deg);
+}
+.hr-75 { 
+    filter: hue-rotate(75deg);
+    -webkit-filter: hue-rotate(75deg); 
+}
+.hr-90 { 
+    filter: hue-rotate(90deg);
+    -webkit-filter: hue-rotate(90deg);
+}
+
+.tbg-1 { background-color: rgba(0,0,0,0.4); }
+.tbg-2 { background-color: rgba(0,0,0,0.6); }
+.tbg-3 { background-color: rgba(0.0,0,0.8); }

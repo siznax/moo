@@ -1,0 +1,65 @@
+#audio-table {
+    position: sticky;
+    top: 0;
+
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+#album-audio {
+    margin-top: 0;
+    padding-right: 16px;  /** balance album cover padding **/
+
+    vertical-align: top;
+}
+
+#album-cover {
+    padding: 16px;
+    vertical-align: top;
+    width: 62%;
+}
+
+#album-cover img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    position: sticky;
+    top: 16px;
+}
+
+#track-album {
+    font-size: x-large;
+}
+
+#track-artist {
+    font-size: large;
+    font-weight: 100;
+    text-transform: uppercase;
+}
+
+#track-title {
+    font-size: xx-large;
+    padding-top: 1em;
+}
+
+/***************************************************************/
+
+table#album {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    vertical-align: top;
+    text-align: center;
+}
+
+table#album audio {
+    max-width: 320px;
+    max-height: 32px;
+    margin-top: 6px;
+    margin-bottom: 0px;
+}
+
+table#album-layout {
+    width: 100%;
+    border-collapse: collapse;
+}
