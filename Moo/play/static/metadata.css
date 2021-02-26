@@ -3,9 +3,7 @@
 }
 
 #links div {
-    width: 280px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 2em;
     padding-bottom: 0.6em;
 }
 

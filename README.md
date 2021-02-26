@@ -1,13 +1,15 @@
-moo
-===
+&#x1F3B7; moo
+=============
 
 Your music in your browser
 
-[![moo](screenshot1.png)](screenshot1.png)
-[![moo](screenshot2.png)](screenshot2.png)
-[![moo](screenshot3.png)](screenshot3.png)
-[![moo](screenshot4.png)](screenshot4.png)
-[![moo](screenshot5.png)](screenshot5.png)
+[![moo](Moo/img/screenshot1.png)](Moo/img/screenshot1.png)
+[![moo](Moo/img/screenshot2.png)](Moo/img/screenshot2.png)
+[![moo](Moo/img/screenshot3.png)](Moo/img/screenshot3.png)
+[![moo](Moo/img/screenshot4.png)](Moo/img/screenshot4.png)
+[![moo](Moo/img/screenshot5.png)](Moo/img/screenshot5.png)
+
+See our [wiki](https://github.com/siznax/moo/wiki) for details
 
 
 @siznax

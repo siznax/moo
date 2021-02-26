@@ -2,16 +2,20 @@
 
 <div id="metadiv" class="clr-3 center" style="display: none">
 
-  <p style="margin-top: 0; padding-top: 0"><i>{{ track.title }}</i></p>
+  <div style="margin-bottom: 1em;">
+    <i>{{ track.title }}</i>
+  </div>
 
-  {% include "links.html" %}
+  {% include "tracklist-links.html" %}
   
   <table id="metadata">
 
     {% for field in track | sort %}
+
     <tr>
       <td class="clr-4">{{ field }}</td>
-      <td>{{ track[field] }}</td></tr>
+      <td>{{ track[field] }}</td>
+    </tr>
 
     {% endfor %}
 

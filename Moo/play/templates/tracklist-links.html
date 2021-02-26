@@ -18,6 +18,8 @@
       <img alt="FFmpeg" src="/static/ffmpeg.png">
       {% elif encoder and enc.startswith('lame') %}
       <img alt="LAME" src="/static/lame.gif">
+      {% elif encoder and enc.startswith('x') %}
+      <img alt="XLD" src="/static/XLD.png">
       {% endif %}
       {{ encoder or "Unknown encoder"}}
       {% if track.bitrate %}

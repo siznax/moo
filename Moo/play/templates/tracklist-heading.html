@@ -6,8 +6,8 @@
   <span>
     <a class="clr-3"
        href="/genre/{{ info['genre'] or 'None' }}"
-       target="_blank">
-      {{ info['genre'] or "<small>GENRE</small>" | safe }}</a></span>
+       target="_blank">{{ info['genre'] 
+      or "<small>GENRE</small>" | safe }}</a></span>
 
   <span style="white-space: nowrap">
     {{ emoji.star | safe }} {{ emoji.heart | safe }}</span>
