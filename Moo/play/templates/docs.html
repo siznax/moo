@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<link rel="stylesheet" href="/static/docs.css"></link>
+
+<div id="docs">
+
+  <h1>
+    {{ emoji.app | safe }} 
+    <a href="/" target="_blank">moo</a>
+    {{ config.VERSION }}
+  </h1>
+
+  <p>
+    Your music in your browser
+  </p>
+
+  <h2>moo Docs</h2>
+
+  <p>
+    <ul>
+      <li><a href="#moo-todo">moo ToDo</a>
+        &ndash; work in progress</li>
+      <li><a href="#moo-startup">moo Startup</a>
+        &ndash; how to start your moo server</li>
+      <li><a href="#moo-config">moo Config</a>
+        &ndash; application constants</li>
+      <li><a href="#moo-hotkeys">moo Hotkeys</a>
+        &ndash; keyboard shortcuts and related music services</li>
+      <li><a href="#moo-objects">moo Objects</a>
+        &ndash; important data definitions</li>
+      <li><a href="#moo-components">moo Components</a>
+        &ndash; visual elements</li>
+      <li><a href="#moo-routes">moo Routes</a>
+        &ndash; supported URL patterns</li>
+      <li><a href="#moo-style">moo Style</a>
+        &ndash; accessible colors and type</li>
+      <li><a href="#moo-resources">moo Resources</a>
+        &ndash; further reading</li>
+    </ul>
+  </p>
+
+  {% include "docs-todo.html" %}
+
+  {% include "docs-startup.html" %}
+
+  {% include "docs-config.html" %}
+
+  {% include "docs-hotkeys.html" %}
+
+  {% include "docs-objects.html" %}
+
+  {% include "docs-components.html" %}
+
+  {% include "docs-routes.html" %}
+
+  {% include "docs-style.html" %}
+
+  {% include "docs-resources.html" %}
+
+  <p>@siznax</p>
+
+</div>
+
+{% endblock %}
