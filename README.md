@@ -9,7 +9,7 @@ Your music in your browser
 [![](Moo/img/screenshot4.png)](Moo/img/screenshot4.png)
 [![](Moo/img/screenshot5.png)](Moo/img/screenshot5.png)
 
-See our [wiki](https://github.com/siznax/moo/wiki) for details
+[Why?](https://github.com/siznax/moo/wiki/Why)
 
 
 @siznax
