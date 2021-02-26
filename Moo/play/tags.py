@@ -4,8 +4,9 @@ Moo Tag Fields
 '''
 
 
+# https://id3.org/id3v2.4.0-frames
+
 mp3_fields = {
-    # https://id3.org/id3v2.4.0-frames
     'APIC': 'APIC',
     'COMM': 'comments',
     'COMM::eng': 'URL',
@@ -57,8 +58,9 @@ mp3_fields = {
 }
 
 
+# https://mutagen.readthedocs.io/en/latest/api/mp4.html#mutagen.mp4.MP4Tags
+
 mp4_fields = {
-    # https://mutagen.readthedocs.io/en/latest/api/mp4.html#mutagen.mp4.MP4Tags
     '\xa9ART': 'artist',
     '\xa9alb': 'album',
     '\xa9cmt': 'comment',

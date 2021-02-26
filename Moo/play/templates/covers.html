@@ -1,7 +1,49 @@
-{% extends "layout.html" %}
+<link rel="stylesheet" type="text/css" href="/static/covers.css"></link>
 
-{% block body %}
+{% include "recently-played.html" %}
 
-{% include "covers_body.html" %}
+<div id="covers" class="clr-3">
 
-{% endblock %}
+  {% include "covers-heading.html" %}
+
+  {% for path in albums %}
+
+  {% set album = albums[path] %}
+  {% set href = path | replace(base + '/', '') %}
+
+  <div class="album-card">
+    
+    <div>
+      <a href="/album/{{ href | urlencode }}"
+         title="{{ alb }}">
+        <img src="/img/{{ href | urlencode }}"
+             decoding="sync"
+             loading="lazy"></a>
+    </div>
+
+    <div style="white-space: nowrap">
+      <a href="/artist/{{ album.artist }}">
+        {{ album.artist }}</a>
+    </div>
+
+    <div class="clr-c">
+      <b>{{ album.album }}</b>
+    </div>
+
+    <div>
+      <a href="/year/{{ album.year }}">{{ album.year }}</a>
+      &centerdot;
+      <a href="/genre/{{ album.genre | safe }}">{{ album.genre }}</a>
+      &centerdot;
+        {{ album.tracks }}
+      <div class="box encoding">
+        <a href="/encoding/{{ album.encoding }}">
+          {{ album.encoding }}</a>
+      </div>
+    </div>
+
+  </div>
+
+  {% endfor %}
+
+</div>

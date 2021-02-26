@@ -1,2 +1,157 @@
 <div id="links">
+
+  {% if track.encoder %}
+  {% set encoder = track.encoder %}
+  {% set enc = track.encoder.lower() %}
+  {% endif %}
+
+  {% if track.encoder_info %}
+  {% set encoder = track.encoder_info %}
+  {% set enc = track.encoder_info.lower() %}
+  {% endif %}
+
+  <div>
+    <span class="box">
+      {% if encoder and enc.startswith('itunes') %}
+      <img alt="iTunes" src="/static/itunes.png">
+      {% elif encoder and enc.startswith('lavf') %}
+      <img alt="FFmpeg" src="/static/ffmpeg.png">
+      {% elif encoder and enc.startswith('lame') %}
+      <img alt="LAME" src="/static/lame.gif">
+      {% endif %}
+      {{ encoder or "Unknown encoder"}}
+      {% if track.bitrate %}
+      &nbsp;({{ "{} Kbps".format((track.bitrate / 1000) | int) }})
+      {% endif %}
+    </span>
+  </div>
+
+  {% if track.codec and track.codec.upper() == 'ALAC' %}
+
+  <div>
+    <span class="box">
+      <img alt="Safari" src="/static/safari.png">
+      Apple Lossless (requires <i>Safari</i>)</span>
+  </div>
+
+  {% endif %}
+
+  {% if track.album %}
+
+  <div>
+    <span class="box">
+      <img alt="Discogs" src="/static/discogs.png">
+      Discogs
+      <a class="pill" 
+         target="_blank" 
+         title="Go to Discogs albums"
+         href="https://discogs.com/search/?q=%22{{ track.album |
+               urlencode }}%22">albums</a>
+    </span>
+  </div>
+
+  {% endif %}
+
+  {% if track.artist %}  
+
+  {% set slug= "{}-{}".format(
+  "-".join(track.artist.split()).replace("&", "and").replace("'", ''),
+  "-".join(track.title.split())) %}
+
+  <div>
+    <span class="box">
+      <img alt="Genius.com" src="/static/genius.com.png">
+      Genius.com
+      <a target="_blank" 
+         title="Go to Genius.com lyrics"
+         href="https://genius.com/{{ slug | lower }}-lyrics">lyrics</a>
+      </span>
+  </div>
+
+  {% endif %}
+
+  {% set iaq="https://archive.org/search.php?query=mediatype:%22audio%22" %}
+
+  {% if track.artist %}  
+  {% set iac="creator:%22" + track.artist | urlencode + "%22" %}
+  {% endif %}
+
+  {% if track.album %}  
+  {% set iat=" ".join(track.album.split()[:3]) %}
+  {% endif %}
+
+  {% if track.artist or track.album %}
+
+  <div>
+    <span class="box">
+      <img alt="Internet Archive" src="/static/archive.org.jpg">
+      Internet Archive
+      <a target="_blank" 
+         title="Internet Archive items"
+         href="{{ iaq }}+{{ iac }}+{{ iat | urlencode
+               }}&sort=-downloads">items</a>
+    </span>
+  </div>
+
+  {% if track.artist %}  
+
+  <div>
+    <span class="box">
+    <img alt="MusicBrainz" src="/static/music-brainz.png">
+    MusicBrainz
+    <a target="_blank"
+       title="MusicBrainz Release"
+       {% if track.MBID %}
+       href="https://musicbrainz.org/release/{{ track.MBID }}"
+       {% else %}
+       href="https://musicbrainz.org/search?query={{ 
+             track.artist | urlencode }}+{{ 
+             track.album | urlencode }}&type=release"
+       {% endif %}>{% if track.MBID %}{{ 
+      track.MBID }}{% else %}query{% endif %}</a>
+    </span>
+  </div>
+
+  {% endif %}
+
+  {% if track.URL %}
+
+  <div>
+    <span class="box">
+      <img alt="URL" src="/static/web.png">
+      Web
+      <a class="pill" 
+         target="_blank" 
+         href="{{ track.URL | safe }}">URL</a>
+    </span>
+  </div>
+
+  {% endif %}
+
+  <div>
+     <span class="box">
+       <img alt="Wikipedia" src="/static/wikipedia.png">
+       Wikipedia
+       <a target="_blank" 
+          title="Wikipedia page"
+          href="https://en.wikipedia.com/wiki/{{ track.artist
+          }}">page</a>
+     </span>
+  </div>
+
+  <div>
+    <span class="box">
+      <img alt="YouTube" src="/static/youtube.png">
+      YouTube
+    <a target="_blank" 
+       title="YouTube videos"
+       href="https://youtube.com/results?search_query=%22{{
+             track.artist | urlencode }}%22+%22{{ 
+             track.title | urlencode }}%22">videos</a>
+    </span>
+  </div>
+
+  {% endif %}
+
 </div>
+

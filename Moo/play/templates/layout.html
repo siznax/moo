@@ -1,50 +1,74 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta 
-     name="viewport"
-     content="width=device-width,initial-scale=1,shrink-to-fit=no">
-  <link 
-     rel="shortcut icon" 
-     href="{{ url_for('static', filename='moo.ico') }}">
+  <head>
+    <meta charset="utf-8">
 
-  <link rel="stylesheet" href="/static/layout.css">
-  <link rel="stylesheet" href="/static/dark.css">
+    <meta 
+       name="viewport"
+       content="width=device-width,initial-scale=1,shrink-to-fit=no">
 
-  <title>
-    {% block title %}
+    <link 
+       rel="shortcut icon" 
+       href="{{ url_for('static', filename='moo.ico') }}">
 
-    {% if track and track.artist %}
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/custom.css">
+
+    <!-- <link rel="stylesheet" href="/static/custom-dark.css"> -->
+
+    {% if request.path == '/' %}
+    <title>moo {{ config.VERSION }}</title>
+    {% endif %}
+
+    {% if (request.path.startswith('/alpha')
+           or request.path.startswith('/artist')
+           or request.path.startswith('/genre')
+           or request.path.startswith('/year')
+           or request.path.startswith('/format')) %}
+    <title>{{ request.path.split('/')[-1] }} albums</title>
+    {% endif %}
+
+    {% if request.path == '/docs' %}
+    <title>moo {{ config.VERSION }} docs</title>
+    {% endif %}
+
+    {% if track %}
 
     {% if request.path.startswith('/album') %}
-
-    {{ track.artist }} ({{ track.year }}) {{ track.album }}
-
-    {% elif request.path.startswith('/track') %}
-
-    "{{ track.title }}" [{{ track.track }}]
-    {{ track.album }} ({{ track.year }}) {{ track.artist }}
-
-    {% else %}
-    moo
-    {% endif %}
-    
-    {% else %}
-    moo
+    <title>
+      {{ track.album or "Album" }}
+      &mdash;
+      {{ track.artist or "Artist" }}
+    </title>
     {% endif %}
 
-    {% endblock %}
-  </title>
+    {% if request.path.startswith('/track') %}
+    <title>
+      {{ track.title | truncate(16) or "Track" }}
+      &mdash;
+      {{ track.artist or "Artist" }}
+      &centerdot;
+      {{ track.album or "Album" }}
+    </title>
+    {% endif %}
 
-  <!-- <link rel="stylesheet" href="/static/debug.css"> -->
+    {% endif %}
 
-</head>
-<body id="body" onload="init({{ config.VERSION }})" class="dark">
+  </head>
+  <body onload="init({{ config.VERSION }});">
 
-  {% block body %}{% endblock %}
+    {% block body %}{% endblock %}
 
-  <!-- <link rel="stylesheet" href="/static/media.css"> -->
-  <script src="/static/audio.js"></script>
-</body>
+    <script src="/static/audio.js"></script>
+
+    {% if request.path.startswith('/album')
+       or request.path.startswith('/track') %}
+    <script src="/static/keyboard.js"></script>
+    {% endif %}
+
+
+    {% include "clock.html" %}
+    <script src="/static/clock.js"></script>
+
+  </body>
 </html>

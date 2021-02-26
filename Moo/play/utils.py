@@ -43,4 +43,4 @@ def h_m(seconds, colons=False):
     if colons:
         return ":".join(out)
 
-    return " ".join(out)
+    return "".join(out)

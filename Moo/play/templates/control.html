@@ -1,7 +1,11 @@
+{% if control %}
 <div id="control"
-     hidden="true" 
-     next="{{ control.next }}" 
-     prev="{{ control.prev }}"
+     alkey="{{ alkey | safe }}"
+     base="{{ base }}"
+     hidden="true"
+     next="{{ control.next | safe }}"
      ntracks="{{ metadata | length }}"
-     ralbum="{{ control.ralbum | urlencode }}"
-     rtrack="{{ control.rtrack | urlencode }}"></div>
+     prev="{{ control.prev }}"
+     ralbum="{{ control.ralbum | safe }}"
+     rtrack="{{ control.rtrack }}"></div>
+{% endif %}

@@ -1,53 +1,28 @@
-{% extends "layout.html" %}
+<link rel="stylesheet" type="text/css" href="/static/album.css"></link>
 
-{% block body %}
+<div>
 
-{% include "control.html" %}
+  <table id="album-layout">
 
-<style>
-div#cover {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
+    <tr>
 
-    width: 60%;
-    max-height: 98%;
-    overflow: scroll;
+      <td id="album-cover">
+        <a href="/artist/{{ track.artist or 'None' }}"
+           target="_blank">
+          <img 
+             alt="album cover"
+             src="/img{{ slash }}{{ alkey | urlencode }}">
+        </a>
+      </td>
 
-    padding: 16px;
-}
-div#music {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: calc(60% + 32px);
+      <td id="album-audio">
+        {% include "audio-table.html" %}
+        {% include "tracklist.html" %}
+        {% include "metadata.html" %}
+      </td>
 
-    width: calc(40% - 48px);
-    height: 98%;
+    </tr>
 
-    padding-left: 0;
-    padding-right: 16px;
+  </table>
 
-    overflow: scroll;
-}
-</style>
-
-<div id="cover" class="">
-  {% include "help.html" %}
-  {% include "index_body.html" %}
-  {% include "covers_body.html" %}
-  {% include "related.html" %}
-  {% include "cover.html" %}
 </div>
-
-<div id="music" class="">
-  {% include "player.html" %}
-  {% include "classical.html" %}
-  {% include "tags.html" %}
-  {% include "metadata.html" %}
-  {% include "tracklist.html" %}
-  {% include "personnel.html" %}
-</div>
-
-{% endblock %}

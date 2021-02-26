@@ -8,31 +8,104 @@ import os
 import random
 import string
 
+from collections import Counter
 from io import BytesIO
 from math import ceil
-
-from collections import Counter
 from pathlib import Path
-from unidecode import unidecode
 from urllib.parse import quote
 
 import mutagen
 
+from unidecode import unidecode
 from flask import app, send_file, url_for
+
 from .tags import mp3_fields, mp4_fields
 from .utils import h_m
 
+EMOJI = {
+    'app': '&#x1F3B7;',
+    'base': '&#x1F3B5;',
+    'fleuron': '&#x2766;',
+    'heart': '&#x2661;',
+    'hearted': '&#x1F49C;',
+    'help': '&#x2754;',
+    'next': '&#x23ED;',
+    'none': '&#x1F6AB;',
+    'notfound': '&#x1F62D;',
+    'prev': '&#x23EE;',
+    'random': '&#x1F3B2;',
+    'seemore': '&#x1F52E',
+    'star': '&#x2606;',
+    'starred': '&#x2B50;',
+}
+
 # https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_codecs
-#
 MEDIATYPES = {
     "AAC": "audio/aac",
     "FLAC": "audio/ogg",
-    "MP4": "audio/mp4",
     "MP3": "audio/mp3",
+    "MP4": "audio/mp4",
     "MPEG": "audio/mpeg",
     "OGG": "audio/ogg",
     "WAV": "audio/wav",
 } 
+
+
+def albums(base, index):
+    '''
+    returns dict of minimal album metadata
+    '''
+    out = dict()
+    dupes = dict()
+
+    for ind,path in enumerate(index):
+        pobj = Path(path)
+        tracks = len([x for x in pobj.iterdir()])
+
+        try:
+            meta = metadata(base, pobj, single=True)['01']
+        except KeyError:
+            meta = {'path': path, 'tracks': tracks}
+
+        year = meta['year'][:4] if meta.get('year') else 'None'
+        artist = meta.get('album_artist') or meta.get('artist')
+
+        pruned = {
+            'album': meta.get('album'),
+            'artist': artist.split(';')[0] if artist else 'None',
+            'encoding': meta.get('encoding'),
+            'genre': meta.get('genre') or 'None',
+            'index': ind,
+            'mtime': meta.get('mtime'),
+            'tracks': tracks,
+            'year': year}
+
+        if path in out:
+            if path not in dupes:
+                dupes[path] = list()
+            dupes[path].append(path)
+        else:
+            out[path] = pruned
+
+    if dupes:
+        raise ValueError('Found duplicates: {}'.format(dupes))
+
+    return out
+
+
+def alpha(albums, mtag='artist'):
+    '''
+    returns a map of letters and counts from selected mtag
+    '''
+    letters = Counter()
+
+    for path in albums:
+        alb = albums[path]
+        art = alb.get(mtag)
+        if art:
+            letters[art[0].upper()] += 1
+
+    return dict(letters)
 
 
 def album(key, index):
@@ -42,6 +115,79 @@ def album(key, index):
     for path in index:
         if str(path).endswith(key):
             return str(path)
+
+
+def prefixed(titles):
+    '''
+    returns (prefix) nested dict from list of titles, which can vastly
+    improve readability of classical music tracks
+
+    Note: this is an experimental feature.
+
+    EXAMPLE INPUT = [
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 1. Allegro Moderato',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 2. Scherzo: Allegro',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 3. Andante Cantabile',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 4. Allegro Moderato, Presto',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 1. Allegro Vivace E Con Brio',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 2. Largo Assai Ed Espressivo',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 3. Presto'
+    ]
+
+    DESIRED OUTPUT = {
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke"': {
+            '1. Allegro Moderato',
+            '2. Scherzo: Allegro',
+            '3. Andante Cantabile',
+            '4. Allegro Moderato, Presto'}
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost"': {
+            '1. Allegro Vivace E Con Brio',
+            '2. Largo Assai Ed Espressivo',
+            '3. Presto'}
+    '''
+    out = dict()
+
+    same = list()
+    prefix = None
+    suffix = None
+    last = list()
+
+    for i, title in enumerate(titles):
+
+        print(i, title)
+
+        if last:
+            for j, word in enumerate(title.split()):
+                if word == last[j]:
+                    same.append(word)
+                else:
+                    suffix = ' '.join(title.split()[j:])
+                    break
+
+            print('  same:', same)
+            print('  suffix:', suffix)
+
+            if len(same) > 2 and suffix:
+                prefix = ' '.join(same)
+
+                print('   prefix:', prefix)
+                print('   suffix:', suffix)
+  
+                for item in out:
+                    if prefix in item:
+                        continue
+
+                if prefix not in out:
+                    first_suffix = ' '.join(last).replace(prefix, '').strip()
+                    out[prefix] = [first_suffix]
+                
+                out[prefix].append(suffix)
+
+        same = list()
+        suffix = None
+        last = title.split()
+
+    return out
 
 
 def control(base, index, metadata, track_ind):
@@ -67,6 +213,18 @@ def control(base, index, metadata, track_ind):
         'ralbum': alkey,
         'rtrack': random.choice(range(ntracks)) + 1,
         'track_num': track_ind + 1}
+
+
+def counts(albums, metakey='genre'):
+    '''
+    returns counter of genres from albums
+    '''
+    count = Counter()
+
+    for item in albums:
+        count[albums[item].get(metakey) or 'None'] +=1
+
+    return dict(count)
 
 
 def cover(fpath, tpath=None):
@@ -162,54 +320,24 @@ def get_apic(fpath, tpath=None):
             return track_img
 
 
-def get_term(meta):
+def index(config, sort=None):
     '''
-    returns "one good" term from a metadata value
+    returns list of paths that do not contain directories, 
+    reverse-sorted by mtime (default), atime, or ctime
     '''
-    excludes = ('album', 'artist', 'artists', 'blue', 'blues', 'from',
-                'great', 'jazz', 'music', 'rock', 'song', 'this',
-                'unknown', 'various')
+    # base = Path(config['BASE'])
+    # return [x for x in base.rglob('*') if x.is_dir()]
 
-    if len(meta.split()) == 1:
-        words = [meta]
-    else:
-        words = meta.split()
+    albums = list()  # paths that do not contain directories
 
-    def ascii(word):
-        out = word.split("'")[0]  # keep possessive root
-        out, _ = os.path.splitext(out)  # drop extension
-        out = "".join([x for x in out if x not in string.punctuation])
-        return unidecode(out)
-
-    for _ in words:
-        word = ascii(_)
-        if len(word) > 3 and word.lower() not in excludes:
-            return word
-
-
-def index(config, sort=None, offset=None, limit=None):
-    '''
-    returns list of albums (PosixPaths), reverse-sorted by mtime
-    albums are paths that do not contain directories
-    '''
-    offset = offset or 0
     sort_key = os.path.getmtime
-
     if sort:
         if sort == 'atime':
             sort_key = os.path.getatime
         if sort == 'ctime':
             sort_key = os.path.getctime
 
-    paths = sorted(
-        Path(config['BASE']).rglob('*'),
-        key=sort_key,
-        reverse=True)
-
-    albums = list()  # paths that do not contain directories
-
-    count = 0
-    for path in paths:
+    for path in Path(config['BASE']).rglob('*'):
         leaf = True
 
         try:
@@ -220,41 +348,46 @@ def index(config, sort=None, offset=None, limit=None):
         except NotADirectoryError:
             continue
 
-        if leaf:  # and path has children?
-            albums.append(path)
-            count += 1
+        if leaf:
+            albums.append(str(path))
 
-        if limit and count >= limit:
-            break
-
-    return albums[offset:limit]
+    return sorted(albums, key=sort_key, reverse=True)
 
 
 def info(track, metadata):
     '''
-    returns album info as tuple-list from metadata
+    returns dict of album info
     '''
-    out = list()
+    album_artist = None
+    first_artist = None
     length = 0.0
-    ntracks = len(metadata)
+    out = dict()
     size = 0
 
     for meta in metadata:
         length += metadata[meta].get('length', 0.0)
         size += metadata[meta].get('size', 0)
 
+        if not first_artist:
+            first_artist = metadata[meta].get('artist')
+
+        if metadata[meta].get('artist') != first_artist:
+            out['various'] = True
+
+    artist = track.get('album_artist') or track.get('artist')
+
+    out['artist'] = artist.split(';')[0] if artist else None
+    out['encoding'] = track.get('encoding')
+    out['genre'] = track.get('genre')
+    out['ntracks'] = len(metadata)
+
     if 'year' in track:
-        out.append(('year', track['year'][:4]))
-
-    if 'genre' in track:
-        out.append(('genre', track['genre']))
-
-    out.append(('ntracks', "{} tracks".format(ntracks)))
+       out['year'] = track['year'][:4]
 
     if int(length):
-        out.append(('length', h_m(int(length))))
+        out['length'] = h_m(int(length))
 
-    out.append(('size', "{} MB".format(round(size / 1e6, 1))))
+    out['size'] = "{}MB".format(round(size / 1e6, 1))
 
     return out
 
@@ -268,9 +401,10 @@ def mediatype(enc):
             return MEDIATYPES[mtype]
 
 
-def metadata(base, album):
+def metadata(base, album, single=False):
     '''
-    returns metadata dict for a single track from album path
+    returns metadata for an entire album from the album path,
+    or for a single track if single is True
     '''
     out = dict()
 
@@ -303,6 +437,9 @@ def metadata(base, album):
         data.update(stat(str(fpath)))
 
         out[key] = data
+        
+        if single is True and data:
+            break
 
     out = parse_fnames(out)
 
@@ -424,25 +561,10 @@ def rekey_mp4_tags(tags):
     return _
 
 
-def related(index, terms):
-    '''
-    returns index pruned by search term
-    '''
-    _ = list()
-
-    for path in index:
-        dpath = unidecode(str(path).lower())
-        for term in terms:
-            if term.lower() in dpath:
-                    _.append(path)
-
-    return list(set(_))
-
-
 def sorted_tracks(meta):
     '''
-    returns album metadata as dict 
-    with keys sorted by track, disc number
+    returns album metadata as dict with keys sorted by disc and then
+    track number
     '''
     discs = list()
     ntracks = len(meta)
@@ -480,7 +602,6 @@ def sorted_tracks(meta):
         # print('ind = {}, tnum = {} {}'.format(ind, tnum, numbers))
 
         out[key] = meta[track]
-        out[key]['fname'] = track
         out[key]['_key'] = key
 
     if len(out) != ntracks:
@@ -493,6 +614,7 @@ def sorted_tracks(meta):
 def stat(fpath):
     '''returns file stat data as dict'''
     stat = os.stat(fpath)
+
     return {
         'fpath': fpath,
         'atime': stat.st_atime,
@@ -500,12 +622,12 @@ def stat(fpath):
         'size': stat.st_size}
 
 
-def tags(base, alkey, track):
+def tags(base, alkey, track_fname):
     '''
     returns all ID3 tags for a single track from album path as dict
     '''
     for fname in Path(os.path.join(base, alkey)).iterdir():
-        if track.get('fname') == str(fname):
+        if track_fname == str(fname):
             audio = mutagen.File(str(fname))
 
             try:
@@ -521,40 +643,8 @@ def tags(base, alkey, track):
 
             return tags
 
-def terms(metadata, track):
-    '''
-    returns list of "related" search terms from track, album metadata
-    '''
-    tmp = list()
-
-    if track.get('artist'):
-        tmp.append(get_term(track['artist']))
-
-    if track.get('album_artist'):
-        tmp.append(get_term(track['album_artist']))
-
-    if track.get('album'):
-        tmp.append(get_term(track['album']))
-
-    if track.get('title'):
-        tmp.append(get_term(track['title']))
-    else:
-        if track.get('genre'):
-            tmp.append(get_term(track['genre']))
-
-    return sorted(list(set([x for x in tmp if x])))
-
-
 def tracks(fpath):
     '''
     returns a list of tracks from a filepath
     '''
-    return [str(x) for x in Path(fpath).iterdir()]
-
-
-def update_history(path):
-    '''
-    writes album path to .history file
-    '''
-    with open("HISTORY", "w") as _:
-        _.write(path + "\n")
+    return [str(x) for x in Path(fpath).iterdir() if not x.name.startswith('.')]

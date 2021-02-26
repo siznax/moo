@@ -1,53 +1,93 @@
-<style>
-table#tracklist {
-    margin: 16px;
-    margin-bottom: 32px;
-    text-align: left;
-}
-table#tracklist td {
-　　margin: 0;
-    padding: 0;
-    vertical-align: top;
-}
-table#tracklist tr:hover .title {
-    background-color: lightgray;
-}
-table#tracklist tr:hover .title a {
-    color: black;
-}
-table#tracklist tr:hover .track_num {
-    color: black;
-}
-.track_num {
-    margin-top: 4px;
-    text-align: right;
-    color: silver;
-}
-.title {
-    margin-left: 8px;
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-.title a {
-    color: gray;
-}
-tr.active a {
-    color: black;
-    font-weight: bold;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="/static/tracklist.css"></link>
 
+<div id="tracklist" style="{{ display }}">
 
-<table id="tracklist">
-  {% for key in metadata | sort %}
-  <tr class="{% if metadata[key].src == track.src %}active{% endif %}">
-    <td><div class="track_num">{{ loop.index }}</div></td>
-    <td>
-      <div class="title">
-        <a href="/track/{{ loop.index }}/{{ alkey | urlencode }}"
-           path="{{ alkey }}">{{ metadata[key].title }}</a>
-      </div>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+  {% include "tracklist-heading.html" %}
+
+  {% include "prefixed.html" %}
+
+  <table class="tracklist">
+
+    {% for key in metadata | sort %}
+
+    {% if loop.index > 10 %}
+    {% set fragment = True %}
+    {% endif %}
+
+    {% if metadata[key].src == track.src %}
+    {% set current = True %}
+    {% endif %}
+
+    <tr>
+
+      <td class="tracklist-index">
+        {% if fragment %}<a name="{{ loop.index }}"></a>{% endif %}
+        <span
+           class="{% if current %}clr-c{% else %}clr-2{% endif %}"
+           style="margin-right: 6px">
+          {{ loop.index }}</span>
+      </td>
+
+      <td class="tracklist-title">
+        {% if metadata[key].src == track.src %}
+
+        <b class="{% if current %}clr-a{% endif %}">
+          {{ metadata[key].title }}</b>
+
+        {% else %}
+
+        <a class="{% if current %}clr-c{% endif %}"
+           href="/track/{{ loop.index }}{{ alkey | urlencode 
+           }}{% if fragment %}#{{ loop.index }}{% endif %}"
+           path="{{ alkey }}">
+          {{ metadata[key].title }}</a>
+
+        {% endif %}
+
+      </td>
+
+      <td class="tracklist-length">
+
+        {% set len = metadata[key].length %}
+
+        {% if len %}
+
+        <span
+           class="{% if current %}clr-c{% else %}clr-2{% endif %}"
+           style="margin-left: 12px;">
+          {{ (len / 60) | int }}:{{ "{:02d}".format((len % 60) | int) }}</span>
+
+        {% endif %}
+
+      </td>
+
+    </tr>
+
+    {% if info.various %}
+
+    <tr>
+      <td></td>
+
+      <td colspan="2" class="tracklist-artist">
+        <i><a class="{% if metadata[key].src == track.src %}clr-b{% else
+              %}clr-2{% endif %}"
+              href="/artist/{{ metadata[key].artist | safe }}"
+              target="_blank">{{ metadata[key].artist }}</a></i></td>
+    </tr>
+
+    {% endif %}
+
+    {% endfor %}
+
+  </table>
+
+  {% include "tracklist-footer.html" %}
+
+</div>
+
+<p class="center">
+  <a href="#"
+     class="emoji"
+     onclick="toggle('tracklist'); toggle_hidden('metadiv')">{{
+    emoji.seemore | safe }}</a>
+</p>

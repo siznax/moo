@@ -1,16 +1,22 @@
-<table id="metadata" class="border hidden round data">
-  <tr>
-    <th colspan="2">
-      "{{ track.title }}" metadata 
-      <kbd class="btn" onclick="toggle_hidden('metadata')">d</kbd>
-    </th>
-  </tr>
+<link rel="stylesheet" type="text/css" href="/static/metadata.css">
 
-  {% for field in track | sort %}
-  <tr>
-    <td>{{ field }}</td>
-    <td>{{ track[field] }}</td>
-  </tr>
-  {% endfor %}
+<div id="metadiv" class="clr-3 center" style="display: none">
 
-</table>
+  <p style="margin-top: 0; padding-top: 0"><i>{{ track.title }}</i></p>
+
+  {% include "links.html" %}
+  
+  <table id="metadata">
+
+    {% for field in track | sort %}
+    <tr>
+      <td class="clr-4">{{ field }}</td>
+      <td>{{ track[field] }}</td></tr>
+
+    {% endfor %}
+
+  </table>
+
+  <p>{{ config.PACKAGE }} {{ config.VERSION }}</p>
+
+</div>

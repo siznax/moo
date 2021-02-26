@@ -2,6 +2,22 @@
 
 {% block body %}
 
-{% include "index_body.html" %}
+<div id="index">
+
+{% if request.path.startswith('/album')
+   or request.path.startswith('/track') %}
+
+{% include "control.html" %}
+{% include "album.html" %}
+
+{% else %}
+
+{% include "header.html" %}
+{% include "covers.html" %}
+{% include "footer.html" %}
+
+{% endif %}
+
+</div>
 
 {% endblock %}
