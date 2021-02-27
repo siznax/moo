@@ -30,22 +30,11 @@ table td {
     vertical-align: top;
 }
 
-
-.bg { background-color: lavender; }
-
-.bg-black { background-color: black; }
-.bg-white { background-color: white; }
-
-.clr-black { color: black; }
-.clr-white { color: white; }
-
-
 .box {
     display: inline-block;
 
     padding: 4px 8px;
 
-    background-color: lavender;
     border-radius: 4px;
 }
 
@@ -55,11 +44,10 @@ table td {
     margin-bottom: 8px;
     margin-left: 4px;
     margin-right: 4px;
-
-    cursor: pointer;
     padding: 4px 8px;
+
     border-radius: 4px;
-    background-color: lavender;
+    cursor: pointer;
 }
 
 .center {
@@ -77,23 +65,21 @@ table td {
 }
 
 
-/** Default colors **/
+/** basic colors **/
 
-.button, .count-card, .encoding {
+.bg { background-color: lavender; }
+.bg-black { background-color: black; }
+.bg-white { background-color: white; }
+
+.clr-black { color: black; }
+.clr-white { color: white; }
+
+.box, .button, .count-card {
     background-color: lavender;
 }
 
 
-/** Font utilities **/
-
-
-.sans-serif {
-    font-family: sans-serif;
-}
-
-
-/** Color utilities **/
-
+/** hue rotate **/
 
 .hr-30 {
     filter: hue-rotate(30deg);
@@ -115,6 +101,8 @@ table td {
     filter: hue-rotate(90deg);
     -webkit-filter: hue-rotate(90deg);
 }
+
+/* transparent backgrounds */
 
 .tbg-1 { background-color: rgba(0,0,0,0.4); }
 .tbg-2 { background-color: rgba(0,0,0,0.6); }

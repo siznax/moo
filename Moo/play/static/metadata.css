@@ -1,13 +1,13 @@
-#links {
+#links, #encoding {
     text-align: left;
 }
 
-#links div {
+#links div, #encoding div {
     margin-left: 2em;
     padding-bottom: 0.6em;
 }
 
-#links img {
+#links img, #encoding img {
     height: 1.2em;
     vertical-align: middle;
     margin-right: 8px;

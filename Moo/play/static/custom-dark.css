@@ -3,16 +3,9 @@
  
     1: rgb(36,36,36)    <= background
     2: rgb(76,76,76)    <= slider-right
-    3: rgb(68,68,68)    <= slider-left
-    4: rgb(78,78,78)    <= time remaining
-    5: rgb(114,114,114) <= play button
-    6: rgb(128,128,128) <= track position
- 
-  Highlight colors (shades of pink)
- 
-    a: rgb(255,96,178)
-    b: rgb(255,75,161)
-    c: rgb(254,168,252)
+    3: rgb(135,135,135) <= slider-left
+    4: rgb(156,156,156) <= time remaining
+    5: rgb(227,227,227) <= play button
 */
 
 .bg-1 { background-color: rgb(36,36,36);    }
@@ -21,19 +14,28 @@
 .bg-4 { background-color: rgb(156,156,156); }
 .bg-5 { background-color: rgb(227,227,227); }
 
-.bg-a { background-color: rgb(255,96,178); }
-.bg-b { background-color: rgb(255,75,161); }
-.bg-c { background-color: rgb(254,168,252); }
-
 .clr-1 { color: rgb(36,36,36);    }
 .clr-2 { color: rgb(76,76,76);    }
 .clr-3 { color: rgb(135,135,135); }
 .clr-4 { color: rgb(156,156,156); }
 .clr-5 { color: rgb(227,227,227); }
 
+/*
+  Highlight colors (shades of pink)
+ 
+    a: rgb(255,96,178)
+    b: rgb(255,75,161)
+    c: rgb(254,168,252)
+*/
+
+.bg-a { background-color: rgb(255,96,178); }
+.bg-b { background-color: rgb(255,75,161); }
+.bg-c { background-color: rgb(254,168,252); }
+
 .clr-a { color: rgb(255,96,178); }
 .clr-b { color: rgb(255,75,161); }
 .clr-c { color: rgb(254,168,252); }
+
 
 html, body {
     background-color: black;
