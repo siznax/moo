@@ -156,7 +156,7 @@ def img_alkey(alkey):
     try:
         return lib.cover(os.path.join(base, alkey))
     except TypeError:
-        return app.send_static_file('cover.png')
+        return app.send_static_file('ico/cover.png')
 
 
 @app.route('/img/track/<tnum>/<path:alkey>')
