@@ -11,7 +11,8 @@
      class="button"
      style="margin-left: 8px">&times;</a>
   {% else %}
-  <a href="/random"
+  <a href="#"
+     onclick="playRandomTrack()"
      style="margin-left: 8px;">{{ emoji.random | safe }}</a>
   {%- endif -%}
 </div>

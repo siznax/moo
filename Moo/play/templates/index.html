@@ -4,10 +4,11 @@
 
 <div id="index">
 
+{% include "control.html" %}
+
 {% if request.path.startswith('/album')
    or request.path.startswith('/track') %}
 
-{% include "control.html" %}
 {% include "album.html" %}
 
 {% else %}
