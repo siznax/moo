@@ -8,18 +8,18 @@
 {% set enc = track.encoder_info.lower() %}
 {% endif %}
 
-<div id="encoding">
+<p id="encoding">
 
   <div>
     <span class="box">
       {% if encoder and enc.startswith('itunes') %}
-      <img alt="iTunes" src="/static/itunes.png">
+      <img alt="iTunes" src="/static/ico/itunes.png">
       {% elif encoder and enc.startswith('lavf') %}
-      <img alt="FFmpeg" src="/static/ffmpeg.png">
+      <img alt="FFmpeg" src="/static/ico/ffmpeg.png">
       {% elif encoder and enc.startswith('lame') %}
-      <img alt="LAME" src="/static/lame.gif">
+      <img alt="LAME" src="/static/ico/lame.gif">
       {% elif encoder and enc.startswith('x') %}
-      <img alt="XLD" src="/static/XLD.png">
+      <img alt="XLD" src="/static/ico/XLD.png">
       {% endif %}
       {{ encoder or "Unknown encoder"}}
       {% if track.bitrate %}
@@ -32,10 +32,10 @@
 
   <div>
     <span class="box">
-      <img alt="Safari" src="/static/safari.png">
+      <img alt="Safari" src="/static/ico/safari.png">
       Apple Lossless (requires <i>Safari</i>)</span>
   </div>
 
   {% endif %}
 
-</div>
+</p>

@@ -1,16 +1,16 @@
-#links, #encoding {
-    text-align: left;
+#metadiv span {
+    margin-bottom: 0.4em;
 }
 
-#links div, #encoding div {
-    margin-left: 2em;
-    padding-bottom: 0.6em;
-}
-
-#links img, #encoding img {
+#metadiv img {
     height: 1.2em;
     vertical-align: middle;
-    margin-right: 8px;
+    margin-right: 0.2em;
+}
+
+#metadiv #links {
+    text-align: left;
+    margin-left: 30%;
 }
 
 table#metadata tr td {
