@@ -36,7 +36,6 @@ function keyPressed(e) {
     else if (e.code == "Digit7") { gotoTrack(7) }
     else if (e.code == "Digit8") { gotoTrack(8) }
     else if (e.code == "Digit9") { gotoTrack(9) }
-    else if (e.code == "Digit0") { gotoTrack(10) }
 
     else {
         // ignore
