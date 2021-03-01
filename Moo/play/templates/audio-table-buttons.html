@@ -1,0 +1,28 @@
+<div id="audio-buttons">
+
+  <span class="box">
+
+    <a href="/"
+       class="emoji"
+       target="_blank">{{ emoji.app | safe }}</a>
+
+    <a href="#" 
+       class="emoji hr-75"
+       onclick="gotoPrev()">{{ emoji.prev | safe }}</a>
+
+    <span
+       id="track-number"
+       class="emoji clr-c">
+      {%- if track.disc %}{{ track.disc }}.{% endif -%}
+      {{ "{:02d}".format(track.track | int) }}</span>
+
+    <a href="#"
+       class="emoji hr-75"
+       onclick="gotoNext()">{{ emoji.next | safe }}</a>
+
+    <a href="/random"
+       class="emoji">{{ emoji.random | safe }}</a>
+
+  </span>
+
+</div>

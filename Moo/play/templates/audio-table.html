@@ -1,3 +1,15 @@
+{% set album = track.album or "<small>ALBUM</small>" | safe %}
+
+{% set artist = track.artist or track.album_artist or "None" %}
+
+{% if (artist | length + track.album | length) < 32 %}
+{% set dash = True %}
+{% endif %}
+
+{% if artist | length > 32 %}
+{% set artist = artist.split(';')[0].split(',')[0] %}
+{% endif %}
+
 <div id="audio-table" class="bg-white">
 
   <table id="album">
@@ -8,16 +20,6 @@
       </td>
     </tr>
 
-    {% set artist = track.artist or track.album_artist or "None" %}
-
-    {% if (artist | length + track.album | length) < 32 %}
-    {% set dash = True %}                                                     
-    {% endif %}                                                     
-
-    {% if artist | length > 32 %}
-    {% set artist = artist.split(';')[0].split(',')[0] %}
-    {% endif %}
-
     <tr>
       <td>
         <a id="track-artist"
@@ -27,8 +29,6 @@
       </td>
     </tr>
 
-    {% set album = track.album or "<small>ALBUM</small>" | safe %}
-    
     <tr>
       <td id="track-album">
         <i>
@@ -46,27 +46,7 @@
 
     <tr>
       <td>
-        <a href="/"
-           class="emoji"
-           target="_blank">{{ emoji.app | safe }}</a>
-
-        <a href="#" 
-           class="emoji hr-75"
-           onclick="gotoPrev()">{{ emoji.prev | safe }}</a>
-
-        <span 
-           id="track-number"
-           class="emoji clr-c">
-          {%- if track.disc %}{{ track.disc }}.{% endif -%}
-          {{ "{:02d}".format(track.track | int) }}</span>
-
-        <a href="#" 
-           class="emoji hr-75"
-           onclick="gotoNext()">{{ emoji.next | safe }}</a>
-
-        <a href="/random"
-           class="emoji">{{ emoji.random | safe }}</a>
-
+        {% include "audio-table-buttons.html" %}
       </td>
     </tr>
 
