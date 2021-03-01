@@ -111,6 +111,11 @@ function keyDown(e) {
 }
 
 
+function keyPressed(e) {
+   if (e.code == "KeyR") { gotoRandom() }
+}
+
+
 function playRandomTrack() {
     gotoTrack(control.getAttribute("rtrack"))
 }
@@ -184,6 +189,7 @@ function zoomPlus() {
 
 function init(version) {
     document.addEventListener("keydown", keyDown)
+    document.addEventListener("keypress", keyPressed)
 
     let audio = document.querySelector("audio")
     if (audio) {
