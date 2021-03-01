@@ -15,7 +15,6 @@ function _removeClass(obj, cls) {
 }
 
 function gotoTrack(num) {
-    console.log(num)
     let ntracks = parseInt(control.getAttribute('ntracks'))
     if (parseInt(num) <= ntracks) {
         let alkey = control.getAttribute("alkey")
@@ -65,11 +64,15 @@ function gotoRandom() {
 }
 
 
+function gotoRandomAlbum() {
+    location = "/album/" + control.getAttribute("ralbum")
+}
+
+
 function hide(id) {
     elm = document.getElementById(id)
     elm.style.display = "none"
     elm.style.visibility = "hidden"
-    console.log(id + ' + hidden')
 }
 
 
@@ -77,7 +80,6 @@ function show(id) {
     elm = document.getElementById(id)
     elm.style.display = "block"
     elm.style.visibility = "visible"
-    console.log(id + ' + visible')
 }
 
 
