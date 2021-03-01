@@ -65,7 +65,12 @@ function gotoRandom() {
 
 
 function gotoRandomAlbum() {
-    location = "/album/" + control.getAttribute("ralbum")
+    let ralbum = control.getAttribute("ralbum")
+    let slash = ""
+    if (ralbum[0] != "/") {
+        slash = "/"
+    }
+    location = "/album" + slash + ralbum
 }
 
 
