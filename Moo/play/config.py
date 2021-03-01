@@ -13,9 +13,9 @@ ARTIST_BUTTONS = {
 }
 
 GENRE_BUTTONS = [
-    'Alt', 'Blues', 'Classical', 'Country', 'Folk', 'Funk', 'Hip',
-    'Jazz', 'Latin', 'Metal', 'Pop', 'Punk', 'Rock', 'Reggae', 'Soul',
-    'Spoken', 'World'
+    'Afro', 'Alt', 'Blues', 'Classical', 'Country', 'Folk', 'Funk',
+    'Hip', 'Jazz', 'Latin', 'Metal', 'Pop', 'Punk', 'R&B', 'Rock',
+    'Reggae', 'Soul', 'Soundtrack', 'Spoken', 'World'
 ]
 
 STATIONS = {
