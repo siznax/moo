@@ -7,12 +7,14 @@
     <tr>
 
       <td id="album-cover">
-        <a href="/artist/{{ track.artist or 'None' }}"
-           target="_blank">
-          <img 
-             alt="album cover"
-             src="/img{{ slash }}{{ alkey | urlencode }}">
-        </a>
+        <div id="cover-image">
+          <a href="/artist/{{ track.artist or 'None' }}"
+             target="_blank">
+            <img 
+               alt="album cover"
+               src="/img{{ slash }}{{ alkey | urlencode }}">
+          </a>
+        </div>
       </td>
 
       <td id="album-audio">

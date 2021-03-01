@@ -19,12 +19,13 @@
     width: 62%;
 }
 
-#album-cover img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 4px;
+#cover-image img {
     position: sticky;
     top: 16px;
+
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    width: 100%;
 }
 
 #track-album {
