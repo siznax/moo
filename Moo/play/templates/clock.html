@@ -1,7 +1,4 @@
-{% if not control.ralbum.startswith("/") %}
-{% set slash = "/" %}
-{% endif %}
-
+{% if control %}
 <div style="position: fixed; top: 8px; right: 12px;">
   <span
      id="time"
@@ -15,7 +12,8 @@
      class="button"
      style="margin-left: 8px">&times;</a>
   {% else %}
-  <a href="/album{{ slash }}{{control.ralbum | safe}}"
+  <a href="/album{{ slash }}{{ control.ralbum | safe }}"
      style="margin-left: 8px;">{{ emoji.random | safe }}</a>
   {%- endif -%}
 </div>
+{% endif %}
