@@ -57,6 +57,8 @@
 
     {% block body %}{% endblock %}
 
+    {% include "clock.html" %}
+
     <script src="/static/js/audio.js"></script>
 
     {% if request.path.startswith('/album')
@@ -65,8 +67,6 @@
     {% endif %}
 
     <script src="/static/js/clock.js"></script>
-
-    {% include "clock.html" %}
 
   </body>
 </html>
