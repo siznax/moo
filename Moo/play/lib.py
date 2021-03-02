@@ -51,46 +51,46 @@ MEDIATYPES = {
 } 
 
 
-def albums(base, index):
-    '''
-    returns dict of minimal album metadata
-    '''
-    out = dict()
-    dupes = dict()
+# def albums(base, index):
+#     ''' Removing/Erasing
+#     returns dict of minimal album metadata
+#     '''
+#     out = dict()
+#     dupes = dict()
 
-    for ind,path in enumerate(index):
-        pobj = Path(path)
-        tracks = len([x for x in pobj.iterdir()])
+#     for ind,path in enumerate(index):
+#         pobj = Path(path)
+#         tracks = len([x for x in pobj.iterdir()])
 
-        try:
-            meta = metadata(base, pobj, single=True)['01']
-        except KeyError:
-            meta = {'path': path, 'tracks': tracks}
+#         try:
+#             meta = metadata(base, pobj, single=True)['01']
+#         except KeyError:
+#             meta = {'path': path, 'tracks': tracks}
 
-        year = meta['year'][:4] if meta.get('year') else 'None'
-        artist = meta.get('album_artist') or meta.get('artist')
+#         year = meta['year'][:4] if meta.get('year') else 'None'
+#         artist = meta.get('album_artist') or meta.get('artist')
 
-        pruned = {
-            'album': meta.get('album'),
-            'artist': artist.split(';')[0] if artist else 'None',
-            'encoding': meta.get('encoding'),
-            'genre': meta.get('genre') or 'None',
-            'index': ind,
-            'mtime': meta.get('mtime'),
-            'tracks': tracks,
-            'year': year}
+#         pruned = {
+#             'album': meta.get('album'),
+#             'artist': artist.split(';')[0] if artist else 'None',
+#             'encoding': meta.get('encoding'),
+#             'genre': meta.get('genre') or 'None',
+#             'index': ind,
+#             'mtime': meta.get('mtime'),
+#             'tracks': tracks,
+#             'year': year}
 
-        if path in out:
-            if path not in dupes:
-                dupes[path] = list()
-            dupes[path].append(path)
-        else:
-            out[path] = pruned
+#         if path in out:
+#             if path not in dupes:
+#                 dupes[path] = list()
+#             dupes[path].append(path)
+#         else:
+#             out[path] = pruned
 
-    if dupes:
-        raise ValueError('Found duplicates: {}'.format(dupes))
+#     if dupes:
+#         raise ValueError('Found duplicates: {}'.format(dupes))
 
-    return out
+#     return out
 
 
 def alpha(albums, mtag='artist'):
@@ -108,13 +108,13 @@ def alpha(albums, mtag='artist'):
     return dict(letters)
 
 
-def album(key, index):
-    '''
-    returns album from index matching key
-    '''
-    for path in index:
-        if str(path).endswith(key):
-            return str(path)
+# def album(key, index):
+#     ''' Removing/Erasing
+#     returns album from index matching key
+#     '''
+#     for path in index:
+#         if str(path).endswith(key):
+#             return str(path)
 
 
 def prefixed(titles):
@@ -354,8 +354,9 @@ def index(config, sort=None):
     return sorted(albums, key=sort_key, reverse=True)
 
 
-def info(track, metadata):
+def album(track, metadata):
     '''
+    Changed def info to def album()
     returns dict of album info
     '''
     album_artist = None
