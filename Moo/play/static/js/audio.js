@@ -196,6 +196,7 @@ function init(version) {
         // audio.addEventListener("play", glowOn)
         // audio.addEventListener("pause", glowOff)
         audio.addEventListener("ended", gotoNext)
+        audio.focus({preventScroll:true})
     }
 
     console.log('Moo ' + version)
