@@ -67,12 +67,12 @@
 
     <tr>
       <td></td>
-
-      <td colspan="2" class="tracklist-artist">
+      <td class="tracklist-artist">
         <i><a class="{% if metadata[key].src == track.src %}clr-b{% else
               %}clr-2{% endif %}"
               href="/artist/{{ metadata[key].artist | safe }}"
               target="_blank">{{ metadata[key].artist }}</a></i></td>
+      <td></td>
     </tr>
 
     {% endif %}
