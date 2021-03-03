@@ -8,36 +8,6 @@
     border-radius: 4px;
 }
 
-#audio-table {
-    position: sticky;
-    top: 0;
-
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-
-#album-audio {
-    margin-top: 0;
-    padding-right: 16px;  /** balance album cover padding **/
-
-    vertical-align: top;
-}
-
-#album-cover {
-    padding: 16px;
-    vertical-align: top;
-    width: 62%;
-}
-
-#cover-image img {
-    position: sticky;
-    top: 16px;
-
-    aspect-ratio: 1 / 1;
-    border-radius: 4px;
-    width: 100%;
-}
-
 #track-album {
     font-size: x-large;
 }
@@ -50,7 +20,6 @@
 
 #track-title {
     font-size: xx-large;
-    padding-top: 1em;
 }
 
 /***************************************************************/

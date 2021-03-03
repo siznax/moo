@@ -3,6 +3,13 @@
     margin-right: 8px;
 }
 
+div#tracklist {
+    padding: 8px;
+}
+
+table.tracklist {
+}
+
 .tracklist td {
     padding: 2px 4px;
     padding-bottom: 0;

@@ -1,30 +1,16 @@
-<link rel="stylesheet" type="text/css" href="/static/album.css"></link>
+<link rel="stylesheet" href="/static/album.css">
 
-<div>
+<div style="position: fixed; top: 10px; left: 10px; width: 61%;">
+  <a href="/artist/{{ track.artist or 'None' }}" target="_blank">
+    <img
+       alt="album cover"
+       src="/img{{ slash }}{{ alkey | urlencode }}"
+       style="width: 100%; aspect-ratio: 1/1; border-radius: 8px;"></a>
+</div>
 
-  <table id="album-layout">
-
-    <tr>
-
-      <td id="album-cover">
-        <div id="cover-image">
-          <a href="/artist/{{ track.artist or 'None' }}"
-             target="_blank">
-            <img 
-               alt="album cover"
-               src="/img{{ slash }}{{ alkey | urlencode }}">
-          </a>
-        </div>
-      </td>
-
-      <td id="album-audio">
-        {% include "audio-table.html" %}
-        {% include "tracklist.html" %}
-        {% include "metadata.html" %}
-      </td>
-
-    </tr>
-
-  </table>
-
+<div style="position: absolute; top: 0; left: 63%; width: 36%;
+            min-width: 320px;">
+  {% include "audio-table.html" %}
+  {% include "tracklist.html" %}
+  {% include "metadata.html" %}
 </div>
