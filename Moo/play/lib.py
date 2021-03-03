@@ -52,9 +52,7 @@ MEDIATYPES = {
 
 
 def albums(base, index):
-    ''' Removing/Erasing
-    returns dict of minimal album metadata
-    '''
+   
     out = dict()
     dupes = dict()
 
@@ -349,7 +347,6 @@ def index(config, sort=None):
 
 def album_info(track, metadata):
     '''
-    Changed def info to def album_info()
     returns dict of album info
     '''
     album_artist = None
