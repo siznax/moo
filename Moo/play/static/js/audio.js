@@ -6,25 +6,21 @@ var audio = document.querySelector("audio")
 var control = document.getElementById('control')
 var title = document.getElementById('title')
 
-
-function _addClass(obj, cls) {
-    obj.classList.add(cls)
-}
+var smallBreakWidth = "640"
 
 
-function _removeClass(obj, cls) {
-    obj.classList.remove(cls)
-}
+function adjustLayout() {
+    let coverDiv = document.getElementById('album-cover')
+    let audioDiv = document.getElementById('album-audio')
 
-
-function gotoTrack(num) {
-    let ntracks = parseInt(control.getAttribute('ntracks'))
-    if (parseInt(num) <= ntracks) {
-        let alkey = control.getAttribute("alkey")
-        location = "/track/" + num + "/" + alkey + "#" + num
+    if (window.innerWidth <= smallBreakWidth) {
+        coverDiv.classList.add('small')
+        audioDiv.classList.add('small')
+    } else {
+        coverDiv.classList.remove('small')
+        audioDiv.classList.remove('small')
     }
 }
-
 
 function gotoNext() {
     let next = control.getAttribute('next')
@@ -35,7 +31,6 @@ function gotoNext() {
     }
 }
 
-
 function gotoPrev() {
     let prev = control.getAttribute('prev')
     if (prev > 0) { 
@@ -45,11 +40,9 @@ function gotoPrev() {
     }
 }
 
-
 function gotoRandom() {
     location = '/random'
 }
-
 
 function gotoRandomAlbum() {
     let ralbum = control.getAttribute("ralbum")
@@ -60,6 +53,13 @@ function gotoRandomAlbum() {
     location = "/album" + slash + ralbum
 }
 
+function gotoTrack(num) {
+    let ntracks = parseInt(control.getAttribute('ntracks'))
+    if (parseInt(num) <= ntracks) {
+        let alkey = control.getAttribute("alkey")
+        location = "/track/" + num + "/" + alkey + "#" + num
+    }
+}
 
 function hide(id) {
     elm = document.getElementById(id)
@@ -67,13 +67,21 @@ function hide(id) {
     elm.style.visibility = "hidden"
 }
 
+function init(version) {
+    adjustLayout()
 
-function show(id) {
-    elm = document.getElementById(id)
-    elm.style.display = "block"
-    elm.style.visibility = "visible"
+    window.onresize = adjustLayout
+
+    document.addEventListener("keydown", keyDown)
+    document.addEventListener("keypress", keyPressed)
+
+    if (audio) {
+        audio.addEventListener("ended", gotoNext)
+        audio.focus({preventScroll:true})
+    }
+
+    console.log('Moo ' + version)
 }
-
 
 function keyDown(e) {
 
@@ -97,7 +105,6 @@ function keyDown(e) {
     }
 }
 
-
 function keyPressed(e) {
    if (e.code == "KeyR") { gotoRandom() }
 }
@@ -108,7 +115,9 @@ function playRandomTrack() {
 }
 
 
-function toggle(id) {  /* assumes element is initially visible */
+function toggle(id) {
+
+    /* assumes element is initially visible */
 
     event.preventDefault()
 
@@ -162,16 +171,8 @@ function toggle_hidden(id) {
 
 }
 
-
-function init(version) {
-    document.addEventListener("keydown", keyDown)
-    document.addEventListener("keypress", keyPressed)
-
-    let audio = document.querySelector("audio")
-    if (audio) {
-        audio.addEventListener("ended", gotoNext)
-        audio.focus({preventScroll:true})
-    }
-
-    console.log('Moo ' + version)
+function show(id) {
+    elm = document.getElementById(id)
+    elm.style.display = "block"
+    elm.style.visibility = "visible"
 }

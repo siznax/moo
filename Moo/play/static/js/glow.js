@@ -1,3 +1,11 @@
+function _addClass(obj, cls) {
+    obj.classList.add(cls)
+}
+
+function _removeClass(obj, cls) {
+    obj.classList.remove(cls)
+}
+
 function glowOn() {
 
     /* flicker for a bit */
@@ -11,12 +19,13 @@ function glowOn() {
     window.setTimeout(_addClass, 300, title, "glow")
 }
 
-
 function glowOff() {
     title.classList.remove("glow")
     track.classList.remove("glow")
 }
 
+
+var audio = document.querySelector("audio")
 
 if (audio) {
     // audio.addEventListener("play", glowOn)

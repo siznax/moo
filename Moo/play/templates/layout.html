@@ -60,13 +60,12 @@
     {% include "clock.html" %}
 
     <script src="/static/js/audio.js"></script>
-    <script src="/static/js/clock.js"></script>
 
     {% if request.path.startswith('/album')
        or request.path.startswith('/track') %}
     <script src="/static/js/keyboard.js"></script>
-    <script src="/static/js/layout.js"></script>
     {% endif %}
 
+    <script src="/static/js/clock.js"></script>
   </body>
 </html>
