@@ -52,7 +52,10 @@ MEDIATYPES = {
 
 
 def albums(base, index):
-   
+    '''
+    returns dict of minimal album metadata
+    '''
+       
     out = dict()
     dupes = dict()
 
