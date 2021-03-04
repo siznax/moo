@@ -68,17 +68,16 @@ function hide(id) {
 }
 
 function init(version) {
-    adjustLayout()
-
-    window.onresize = adjustLayout
-
     document.addEventListener("keydown", keyDown)
     document.addEventListener("keypress", keyPressed)
 
     if (audio) {
+        adjustLayout()
         audio.addEventListener("ended", gotoNext)
         audio.focus({preventScroll:true})
     }
+
+    window.onresize = adjustLayout
 
     console.log('Moo ' + version)
 }
