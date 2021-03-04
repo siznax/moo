@@ -1,3 +1,28 @@
+div#album-cover {
+    position: fixed;
+    top: 10px; left: 10px;
+    width: 61%;
+}
+
+div#album-cover.small, div#album-cover.small img {
+    all: unset;
+    display: inline-block;
+    width: 100%;
+    border-radius: 0px;
+}
+
+div#album-audio {
+    position: absolute;
+    top: 0; left: 63%; width: 36%;
+    min-width: 320px;
+}
+
+div#album-audio.small {
+    all: unset;
+    display: inline-block;
+    width: 100%;
+}
+
 #track-number {
     font-size: 1.1em;
     margin: 0;

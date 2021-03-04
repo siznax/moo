@@ -1,20 +1,17 @@
+<!-- Layout control by album.css, layout.js -->
+
 <link rel="stylesheet" href="/static/album.css">
 
-<div style="position: fixed;
-            top: 10px; left: 10px;
-            width: 61%;">
-  <a href="/artist/{{ track.artist or 'None' }}" target="_blank">
+<div id="album-cover">
+  <a href="/artist/{{ track.artist or 'None' }}"
+     target="_blank">
     <img
        alt="album cover"
        src="/img{{ slash }}{{ alkey | urlencode }}"
-       style="width: 100%;
-              aspect-ratio: 1/1;
-              border-radius: 8px;"></a>
+       style="width: 100%; aspect-ratio: 1/1;"></a>
 </div>
 
-<div style="position: absolute;
-            top: 0; left: 63%; width: 36%;
-            min-width: 320px;">
+<div id="album-audio">
   {% include "audio-table.html" %}
   {% include "tracklist.html" %}
   {% include "metadata.html" %}
