@@ -22,6 +22,19 @@ function adjustLayout() {
     }
 }
 
+
+function Bright() {
+    let body = document.querySelector("body")
+    body.classList.remove("dark")
+}
+
+function Dark() {
+    let body = document.querySelector("body")
+    body.classList.add("dark")
+}
+
+
+
 function gotoNext() {
     let next = control.getAttribute('next')
     if (next > 0) { 

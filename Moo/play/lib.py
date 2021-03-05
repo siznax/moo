@@ -25,10 +25,12 @@ from .utils import h_m
 EMOJI = {
     'app': '&#x1F3B7;',
     'base': '&#x1F3B5;',
+    'dark': '&#x1F505;',  # &#x1F505; U+1F505 Dim Button
     'fleuron': '&#x2766;',
     'heart': '&#x2661;',
     'hearted': '&#x1F49C;',
     'help': '&#x2754;',
+    'light': '&#x1F506;',  # &#x1F506; U+1F506 Bright Button
     'next': '&#x23ED;',
     'none': '&#x1F6AB;',
     'notfound': '&#x1F62D;',

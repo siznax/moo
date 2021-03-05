@@ -12,8 +12,7 @@
        href="{{ url_for('static', filename='ico/moo.ico') }}">
 
     <link rel="stylesheet" href="/static/style.css">
-
-    <!-- <link rel="stylesheet" href="/static/custom-dark.css"> -->
+    <link rel="stylesheet" href="/static/custom-dark.css">
 
     {% if request.path == '/' %}
     <title>moo {{ config.VERSION }}</title>
@@ -54,7 +53,7 @@
     {% endif %}
 
   </head>
-  <body onload="init({{ config.VERSION }});">
+  <body onload="init({{ config.VERSION }});" class="dark">
 
     {% block body %}{% endblock %}
 
