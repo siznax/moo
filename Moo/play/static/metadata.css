@@ -1,3 +1,8 @@
+#metadiv {
+    background-color: lightyellow;
+    padding:0 4px;
+}
+
 #metadiv span {
     margin-bottom: 0.4em;
 }
