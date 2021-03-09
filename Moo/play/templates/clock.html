@@ -1,28 +1,44 @@
-<div style="position: fixed; top: 8px; right: 12px;">
-  <span
-     id="time"
-     class="clr-5"></span>
-  {%-
-  if request.path.startswith('/album')
-  or request.path.startswith('/track')
-  or request.path.startswith('/docs')
-  -%}
-  <a href="/"
-     class="button"
-     style="margin-left: 8px">&times;</a>
-  {% else %}
-  <a href="/random"
-     style="margin-left: 8px;">{{ emoji.random | safe }}</a>
-  {%- endif -%}
-</div>
+<link rel="stylesheet" href="/static/clock.css">
 
-<div style="position: fixed; top: 8px; left: 12px;">
-  <a href="#"
-     id="dimmer-dark"
-     class="emoji"
-     onclick="Dark()">{{ emoji.dark | safe }}</a>
-  <a href="#"
-     id="dimmer-light"
-     class="emoji"
-     onclick="Bright()">{{ emoji.light | safe }}</a>
+<div id="clock">
+
+  <div style="float: left;">
+    <a href="/" class="emoji" target="_blank">{{ emoji.app | safe }}</a>
+
+    <a href="#" class="emoji" onclick="Dark()">{{ emoji.dark | safe }}</a>
+
+    <a href="#" class="emoji" onclick="Bright()">{{ emoji.light | safe }}</a>
+
+    <a href="#" class="emoji"
+       onclick="toggle('tracklist'); toggle_hidden('metadiv')"
+       >{{ emoji.seemore | safe }}</a>
+
+    <a href="#" class="emoji hr-75" onclick="gotoPrev()"
+       >{{ emoji.prev | safe }}</a>
+
+    <span id="track-number" class="clr-c">
+      {%- if (track.disc and track.disc | int - 1) -%}{{ track.disc
+      }}.{%- endif -%}{{ "{:02d}".format(track.track | int) }}</span>
+
+    <a href="#" class="emoji hr-75" onclick="gotoNext()"
+       >{{ emoji.next | safe }}</a>
+
+    <a class="emoji"
+       href="/random">{{ emoji.random | safe }}</a>
+  </div>
+
+  <div style="float: right; text-align: right;">
+    <span id="time" class="clr-5"></span>
+    <span id="weather"></span>
+    {%-
+    if request.path.startswith('/album')
+    or request.path.startswith('/track')
+    or request.path.startswith('/docs')
+    -%}
+    <a href="/" id="close-button" class="button">&times;</a>
+    {%- else -%}
+    <a href="/random" class="emoji">{{ emoji.random | safe }}</a>
+    {%- endif -%}
+  </div>
+
 </div>

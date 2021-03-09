@@ -3,12 +3,10 @@
 <link rel="stylesheet" href="/static/album.css">
 
 <div id="album-cover">
-  <a href="/artist/{{ track.artist or 'None' }}"
-     target="_blank">
-    <img
-       alt="album cover"
-       src="/img{{ slash }}{{ alkey | urlencode }}"
-       style="width: 100%; aspect-ratio: 1/1;"></a>
+  <img
+     alt="album cover"
+     src="/img{{ slash }}{{ alkey | urlencode }}"
+     style="width: 100%; aspect-ratio: 1/1; cursor: crosshair;">
 </div>
 
 <div id="album-audio">
