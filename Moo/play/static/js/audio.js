@@ -17,8 +17,8 @@ function adjustLayout() {
         coverDiv.classList.add('small')
         audioDiv.classList.add('small')
     } else {
-        coverDiv.classList.remove('small')
         audioDiv.classList.remove('small')
+        coverDiv.classList.remove('small')
     }
 }
 
@@ -27,6 +27,7 @@ function Bright() {
     let body = document.querySelector("body")
     body.classList.remove("dark")
 }
+
 
 function Dark() {
     let body = document.querySelector("body")
@@ -87,7 +88,7 @@ function init(version) {
     if (audio) {
         adjustLayout()
         audio.addEventListener("ended", gotoNext)
-        audio.focus({preventScroll:true})
+        // audio.focus({preventScroll:true})
     }
 
     window.onresize = adjustLayout
