@@ -1,11 +1,15 @@
 div#clock {
     display: inline-block;
 
-    margin: 8px;
-    margin-top: 1em;
-    margin-bottom: 1.5em;
-    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    padding: 4px 8px;
 
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 8px;
+}
+
+div#clock a, div#clock span {
+    margin: 0;
+    padding: 0;
 }

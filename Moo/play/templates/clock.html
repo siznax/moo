@@ -23,19 +23,21 @@
     <a href="#" class="emoji hr-75" onclick="gotoNext()"
        >{{ emoji.next | safe }}</a>
 
-    <a class="emoji"
-       href="/random">{{ emoji.random | safe }}</a>
+    <a class="emoji" href="/random" style="padding-right: 4px"
+       >{{ emoji.random | safe }}</a>
   </div>
 
   <div style="float: right; text-align: right;">
     <span id="time" class="clr-5"></span>
-    <span id="weather"></span>
+    <span id="weather" style="padding: 2px"></span>
     {%-
     if request.path.startswith('/album')
     or request.path.startswith('/track')
     or request.path.startswith('/docs')
     -%}
-    <a href="/" id="close-button" class="button">&times;</a>
+    <div style="float: right; margin-top: 2px;">
+      <a href="/" class="button" style="padding: 2px 4px">&times;</a>
+    </div>
     {%- else -%}
     <a href="/random" class="emoji">{{ emoji.random | safe }}</a>
     {%- endif -%}

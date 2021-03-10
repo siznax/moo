@@ -1,6 +1,6 @@
 function fetchWeather() {
     if (window.fetch) {
-        fetch("https://wttr.in/?format=%c")
+        fetch("https://wttr.in/?format=3")
             .then(response => response.text())
             .then(data => updateWeather(data))
     }
@@ -19,12 +19,15 @@ function updateTime() {
 }
 
 
-function updateWeather(conditions) {
-    let elm = document.getElementById('weather')
+function updateWeather(data) {
+    let elm = document.getElementById("weather")
 
-    if (elm) {
-        elm.innerHTML = '<a href="https://wttr.in/" target="_blank">'
-            + conditions + "</a>"
+    if (data && elm) {
+        let parts = data.split(" ")
+        elm.innerHTML = '<a href="https://wttr.in/" '
+            + 'target="_blank" '
+            + 'title="' + data.trim().replaceAll(" ", "\n") + '">'
+            + parts[parts.length - 2] + "</a>"
     }
 }
 
