@@ -24,10 +24,11 @@ function updateWeather(data) {
 
     if (data && elm) {
         let parts = data.split(" ")
+        let icon = parts[parts.length - 2] || parts[parts.length - 3]
         elm.innerHTML = '<a href="https://wttr.in/" '
             + 'target="_blank" '
             + 'title="' + data.trim().replaceAll(" ", "\n") + '">'
-            + parts[parts.length - 2] + "</a>"
+            + icon + "</a>"
     }
 }
 
