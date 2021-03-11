@@ -350,6 +350,9 @@ def index(config, sort=None):
         except NotADirectoryError:
             continue
 
+        if not [x for x in os.listdir(str(path)) if not x.startswith('.')]:
+            continue
+
         if leaf:
             albums.append(str(path))
 
