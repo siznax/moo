@@ -4,15 +4,17 @@ div#album-cover {
     width: 61%;
 }
 
-div#album-cover img {
-    cursor: crosshair;
-}
-
 div#album-cover.small, div#album-cover.small img {
     all: unset;
     display: inline-block;
     width: 100%;
     margin-bottom: -4px;
+}
+
+div#album-cover.thin, div#album-cover.thin img {
+    all: unset;
+    height: 100%;
+    aspect-ratio: 1/1;
 }
 
 div#album-audio {
@@ -26,14 +28,15 @@ div#album-audio.small {
     width: 100%;
 }
 
+div#album-audio.thin {
+    all: unset;
+    display: inline-block;
+}
+
 
 div#audio-table {
     position: sticky;
     top: 0;
-}
-
-#close-button {
-    margin: 0;
 }
 
 #track-album {

@@ -7,6 +7,7 @@ var control = document.getElementById('control')
 var title = document.getElementById('title')
 
 var smallBreakWidth = "640"
+var thinBreakHeight = "320"
 
 
 function adjustLayout() {
@@ -16,9 +17,14 @@ function adjustLayout() {
     if (window.innerWidth <= smallBreakWidth) {
         coverDiv.classList.add('small')
         audioDiv.classList.add('small')
+    } else if (window.innerHeight <= thinBreakHeight) {
+        coverDiv.classList.add('thin')
+        audioDiv.classList.add('thin')
     } else {
         audioDiv.classList.remove('small')
+        audioDiv.classList.remove('thin')
         coverDiv.classList.remove('small')
+        coverDiv.classList.remove('thin')
     }
 }
 

@@ -9,27 +9,25 @@
 
     <a href="#" class="emoji" onclick="Bright()">{{ emoji.light | safe }}</a>
 
-    <a href="#" class="emoji"
-       onclick="toggle('tracklist'); toggle_hidden('metadiv')"
-       >{{ emoji.seemore | safe }}</a>
-
     <a href="#" class="emoji hr-75" onclick="gotoPrev()"
        >{{ emoji.prev | safe }}</a>
 
-    <span id="track-number" class="clr-c">
-      {%- if (track.disc and track.disc | int - 1) -%}{{ track.disc
-      }}.{%- endif -%}{{ "{:02d}".format(track.track | int) }}</span>
+    <a href="#" class="emoji"
+       onclick="toggle('tracklist'); toggle_hidden('metadiv')">
+      <span id="track-number" class="clr-c">
+        {%- if (track.disc and track.disc | int - 1) -%}{{ track.disc
+        }}.{%- endif -%}{{ "{:02d}".format(track.track | int) }}</span></a>
 
     <a href="#" class="emoji hr-75" onclick="gotoNext()"
        >{{ emoji.next | safe }}</a>
 
-    <a class="emoji" href="/random" style="padding-right: 4px"
+    <a class="emoji" href="/random" style="margin-right: 4px"
        >{{ emoji.random | safe }}</a>
   </div>
 
   <div style="float: right; text-align: right;">
     <span id="time" class="clr-5"></span>
-    <span id="weather" style="padding: 2px"></span>
+    <span id="weather" style="margin-right: 2px"></span>
     {%-
     if request.path.startswith('/album')
     or request.path.startswith('/track')

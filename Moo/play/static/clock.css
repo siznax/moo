@@ -13,3 +13,6 @@ div#clock a, div#clock span {
     margin: 0;
     padding: 0;
 }
+
+div#clock #track-number {
+}

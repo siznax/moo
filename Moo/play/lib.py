@@ -36,7 +36,6 @@ EMOJI = {
     'notfound': '&#x1F62D;',
     'prev': '&#x23EE;',
     'random': '&#x1F3B2;',
-    'seemore': '&#x1F52E',
     'star': '&#x2606;',
     'starred': '&#x2B50;',
 }

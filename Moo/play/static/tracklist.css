@@ -5,9 +5,7 @@
 
 div#tracklist {
     padding: 0 8px;
-}
-
-table.tracklist {
+    padding-bottom: 2em;
 }
 
 .tracklist td {
