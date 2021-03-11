@@ -3,11 +3,14 @@
 <div id="clock">
 
   <div style="float: left;">
+
     <a href="/" class="emoji" target="_blank">{{ emoji.app | safe }}</a>
 
     <a href="#" class="emoji" onclick="Dark()">{{ emoji.dark | safe }}</a>
 
     <a href="#" class="emoji" onclick="Bright()">{{ emoji.light | safe }}</a>
+
+    <a class="emoji" href="/random">{{ emoji.random | safe }}</a>
 
     <a href="#" class="emoji hr-75" onclick="gotoPrev()"
        >{{ emoji.prev | safe }}</a>
@@ -18,16 +21,14 @@
         {%- if (track.disc and track.disc | int - 1) -%}{{ track.disc
         }}.{%- endif -%}{{ "{:02d}".format(track.track | int) }}</span></a>
 
-    <a href="#" class="emoji hr-75" onclick="gotoNext()"
+    <a href="#" class="emoji hr-75" onclick="gotonext()"
        >{{ emoji.next | safe }}</a>
 
-    <a class="emoji" href="/random" style="margin-right: 4px"
-       >{{ emoji.random | safe }}</a>
   </div>
 
   <div style="float: right; text-align: right;">
-    <span id="time" class="clr-5"></span>
-    <span id="weather" style="margin-right: 2px"></span>
+    <span id="time" class="clr-5" style="margin-left: 2px">--:-- --</span>
+    <span id="weather" style="margin-right: 2px">&#x26A1;</span>
     {%-
     if request.path.startswith('/album')
     or request.path.startswith('/track')

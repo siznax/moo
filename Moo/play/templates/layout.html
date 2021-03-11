@@ -42,7 +42,7 @@
 
     {% if request.path.startswith('/track') %}
     <title>
-      {{ track.title | truncate(16) or "Track" }}
+      {{ track.title or "Track" }}
       &mdash;
       {{ track.artist or "Artist" }}
       &centerdot;
