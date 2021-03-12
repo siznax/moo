@@ -56,6 +56,7 @@ def albums(base, index):
     '''
     returns dict of minimal album metadata
     '''
+       
     out = dict()
     dupes = dict()
 
@@ -109,13 +110,6 @@ def alpha(albums, mtag='artist'):
     return dict(letters)
 
 
-def album(key, index):
-    '''
-    returns album from index matching key
-    '''
-    for path in index:
-        if str(path).endswith(key):
-            return str(path)
 
 
 def prefixed(titles):
@@ -358,7 +352,7 @@ def index(config, sort=None):
     return sorted(albums, key=sort_key, reverse=True)
 
 
-def info(track, metadata):
+def album_info(track, metadata):
     '''
     returns dict of album info
     '''
