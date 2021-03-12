@@ -52,6 +52,53 @@ MEDIATYPES = {
 } 
 
 
+def album(key, index):
+    '''
+    returns album from index matching key
+    '''
+    for path in index:
+        if str(path).endswith(key):
+            return str(path)
+
+
+def album_info(track, metadata):
+    '''
+    returns dict of album info
+    '''
+    album_artist = None
+    first_artist = None
+    length = 0.0
+    out = dict()
+    size = 0
+
+    for meta in metadata:
+        length += metadata[meta].get('length', 0.0)
+        size += metadata[meta].get('size', 0)
+
+        if not first_artist:
+            first_artist = metadata[meta].get('artist')
+
+        if metadata[meta].get('artist') != first_artist:
+            out['various'] = True
+
+    artist = track.get('album_artist') or track.get('artist')
+
+    out['artist'] = artist.split(';')[0] if artist else None
+    out['encoding'] = track.get('encoding')
+    out['genre'] = track.get('genre')
+    out['ntracks'] = len(metadata)
+
+    if 'year' in track:
+       out['year'] = track['year'][:4]
+
+    if int(length):
+        out['length'] = h_m(int(length))
+
+    out['size'] = "{}MB".format(round(size / 1e6, 1))
+
+    return out
+
+
 def albums(base, index):
     '''
     returns dict of minimal album metadata
@@ -108,81 +155,6 @@ def alpha(albums, mtag='artist'):
             letters[art[0].upper()] += 1
 
     return dict(letters)
-
-
-
-
-def prefixed(titles):
-    '''
-    returns (prefix) nested dict from list of titles, which can vastly
-    improve readability of classical music tracks
-
-    Note: this is an experimental feature.
-
-    EXAMPLE INPUT = [
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 1. Allegro Moderato',
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 2. Scherzo: Allegro',
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 3. Andante Cantabile',
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 4. Allegro Moderato, Presto',
-        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 1. Allegro Vivace E Con Brio',
-        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 2. Largo Assai Ed Espressivo',
-        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 3. Presto'
-    ]
-
-    DESIRED OUTPUT = {
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke"': {
-            '1. Allegro Moderato',
-            '2. Scherzo: Allegro',
-            '3. Andante Cantabile',
-            '4. Allegro Moderato, Presto'}
-        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost"': {
-            '1. Allegro Vivace E Con Brio',
-            '2. Largo Assai Ed Espressivo',
-            '3. Presto'}
-    '''
-    out = dict()
-
-    same = list()
-    prefix = None
-    suffix = None
-    last = list()
-
-    for i, title in enumerate(titles):
-
-        print(i, title)
-
-        if last:
-            for j, word in enumerate(title.split()):
-                if word == last[j]:
-                    same.append(word)
-                else:
-                    suffix = ' '.join(title.split()[j:])
-                    break
-
-            print('  same:', same)
-            print('  suffix:', suffix)
-
-            if len(same) > 2 and suffix:
-                prefix = ' '.join(same)
-
-                print('   prefix:', prefix)
-                print('   suffix:', suffix)
-  
-                for item in out:
-                    if prefix in item:
-                        continue
-
-                if prefix not in out:
-                    first_suffix = ' '.join(last).replace(prefix, '').strip()
-                    out[prefix] = [first_suffix]
-                
-                out[prefix].append(suffix)
-
-        same = list()
-        suffix = None
-        last = title.split()
-
-    return out
 
 
 def control(base, index, metadata, track_ind):
@@ -352,44 +324,6 @@ def index(config, sort=None):
     return sorted(albums, key=sort_key, reverse=True)
 
 
-def album_info(track, metadata):
-    '''
-    returns dict of album info
-    '''
-    album_artist = None
-    first_artist = None
-    length = 0.0
-    out = dict()
-    size = 0
-
-    for meta in metadata:
-        length += metadata[meta].get('length', 0.0)
-        size += metadata[meta].get('size', 0)
-
-        if not first_artist:
-            first_artist = metadata[meta].get('artist')
-
-        if metadata[meta].get('artist') != first_artist:
-            out['various'] = True
-
-    artist = track.get('album_artist') or track.get('artist')
-
-    out['artist'] = artist.split(';')[0] if artist else None
-    out['encoding'] = track.get('encoding')
-    out['genre'] = track.get('genre')
-    out['ntracks'] = len(metadata)
-
-    if 'year' in track:
-       out['year'] = track['year'][:4]
-
-    if int(length):
-        out['length'] = h_m(int(length))
-
-    out['size'] = "{}MB".format(round(size / 1e6, 1))
-
-    return out
-
-
 def mediatype(enc):
     '''
     returns mediatype given encoding
@@ -494,6 +428,79 @@ def personnel(metadata):
             _.add(track['conductor'])
 
     return list(_)
+
+
+def prefixed(titles):
+    '''
+    returns (prefix) nested dict from list of titles, which can vastly
+    improve readability of classical music tracks
+
+    Note: this is an experimental feature.
+
+    EXAMPLE INPUT = [
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 1. Allegro Moderato',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 2. Scherzo: Allegro',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 3. Andante Cantabile',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 4. Allegro Moderato, Presto',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 1. Allegro Vivace E Con Brio',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 2. Largo Assai Ed Espressivo',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 3. Presto'
+    ]
+
+    DESIRED OUTPUT = {
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke"': {
+            '1. Allegro Moderato',
+            '2. Scherzo: Allegro',
+            '3. Andante Cantabile',
+            '4. Allegro Moderato, Presto'}
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost"': {
+            '1. Allegro Vivace E Con Brio',
+            '2. Largo Assai Ed Espressivo',
+            '3. Presto'}
+    '''
+    out = dict()
+
+    same = list()
+    prefix = None
+    suffix = None
+    last = list()
+
+    for i, title in enumerate(titles):
+
+        print(i, title)
+
+        if last:
+            for j, word in enumerate(title.split()):
+                if word == last[j]:
+                    same.append(word)
+                else:
+                    suffix = ' '.join(title.split()[j:])
+                    break
+
+            print('  same:', same)
+            print('  suffix:', suffix)
+
+            if len(same) > 2 and suffix:
+                prefix = ' '.join(same)
+
+                print('   prefix:', prefix)
+                print('   suffix:', suffix)
+
+                for item in out:
+                    if prefix in item:
+                        continue
+
+                if prefix not in out:
+                    first_suffix = ' '.join(last).replace(prefix, '').strip()
+                    out[prefix] = [first_suffix]
+
+                out[prefix].append(suffix)
+
+        same = list()
+        suffix = None
+        last = title.split()
+
+    return out
 
 
 def rekey_catchall(tags):

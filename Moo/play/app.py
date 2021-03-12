@@ -257,7 +257,7 @@ def serve_album(alkey, index, albums, track_num=1):
     control = lib.control(base, index, data, tind)
 
     track = data[dkey]
-    info = lib.info(track, data)
+    info = lib.album_info(track, data)
 
     counts = {
         'artist': lib.counts(albums, metakey='artist'),
