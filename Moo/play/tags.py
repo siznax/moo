@@ -55,6 +55,18 @@ mp3_fields = {
     'WORS': 'radio-url',
     'WPUB': 'publisher-url',
     'WXXX': 'URL',
+    # mutagen.flac.VCFLACDict()
+    'ALBUM': 'album',
+    'ARTIST': 'artist',
+    'TITLE': 'title',
+    'DATE': 'year',
+    'GENRE': 'genre',
+    'album': 'album',
+    'artist': 'artist',
+    'title': 'title',
+    'date': 'year',
+    'genre': 'genre',
+    # /mutagen.flac.VCFLACDict()
 }
 
 
