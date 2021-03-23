@@ -254,6 +254,7 @@ def search(terms, methods=['GET', 'POST']):
 
     return render_template(
         'results.html',
+        emoji=lib.EMOJI,
         results=lib.search(sindex, terms),
         terms=terms)
 
