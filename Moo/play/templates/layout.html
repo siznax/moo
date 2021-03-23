@@ -12,6 +12,7 @@
        href="{{ url_for('static', filename='ico/moo.ico') }}">
 
     <link rel="stylesheet" href="/static/style.css">
+
     <link rel="stylesheet" href="/static/custom-dark.css">
 
     {% if request.path == '/' %}
@@ -62,6 +63,9 @@
     {% if request.path.startswith('/album')
        or request.path.startswith('/track') %}
     <script src="/static/js/keyboard.js"></script>
+    {% endif %}
+
+    {% if not request.path.startswith('/find') %}
     <script src="/static/js/clock.js"></script>
     {% endif %}
 
