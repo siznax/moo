@@ -6,7 +6,11 @@
   <span class="box">
     <span>{{ "{:,}".format(albums | length) }}</span>
     {% if arg %}<b style="margin: 0 4px">{{ arg }}</b>{% endif %}
+    {% if request.path == '/' %}
+    <span><b>Albums</b></span>
+    {% else %}
     <span>albums</span>
+    {% endif %}
   </span>
 </p>
 
