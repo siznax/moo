@@ -1,4 +1,4 @@
-<p class="clr-4" style="padding-top: 1.2em">
+<p id="facet-buttons" class="clr-4" style="padding-top: 1.2em">
 
   <a class="emoji"
      title="moo {{ config.VERSION }} on GitHub"
@@ -8,7 +8,9 @@
   <span style="margin-right: 8px">
     <a class="button clr-5"
        style="margin-right: 0"
-       href="/">Albums</a>
+       href="/">{%-
+      if request.path == '/' %}<b>Albums</b>{%-
+      else %}Albums{% endif %}</a>
     <span>{{ "{:,}".format(total) }}</span>
   </span>
 
@@ -16,7 +18,9 @@
     <a href="#"
        class="button clr-5"
        style="margin-right: 0"
-       onclick="toggle_hidden('artist-counts');">Artists</a>
+       onclick="toggle_hidden('artist-counts');">{%-
+      if request.path.startswith('/artist')
+      -%}<b>Artists</b>{% else %}Artists{% endif %}</a>
     <span>{{ "{:,}".format(counts['artist'] | length) }}</span>
   </span>
 
@@ -24,7 +28,9 @@
     <a href="#"
        class="button clr-5" 
        style="margin-right: 0" 
-       onclick="toggle_hidden('genre-counts');">Genres</a>
+       onclick="toggle_hidden('genre-counts');">{%-
+      if request.path.startswith('/genre') %}<b>Genres</b>{%-
+      else %}Genres{% endif %}</a>
     <span>{{ "{:,}".format(counts['genre'] | length) }}</span>
   </span>
 
@@ -32,21 +38,24 @@
     <a href="#"
        class="button clr-5"
        style="margin-right: 0"
-       onclick="toggle_hidden('year-counts');">Years</a>
+       onclick="toggle_hidden('year-counts');">{%-
+      if request.path.startswith('/year') %}<b>Years</b>{%-
+      else %}Years{% endif %}</a>
     <span>{{ "{:,}".format(counts['year'] | length) }}</span>
   </span>
 
-  <span style="margin-right: 8px">
+  <span>
     <a href="#"
        class="button clr-5"
        style="margin-right: 0"
-       onclick="toggle_hidden('format-counts')">Formats</a>
+       onclick="toggle_hidden('format-counts')">{%-
+      if request.path.startswith('/format') %}<b>Formats</b>{%-
+      else %}Formats{% endif %}</a>
     <span>{{ "{:,}".format(counts['format'] | length) }}</span>
   </span>
 
-  <span>
-    <a class="emoji"
-       href="https://github.com/siznax/moo/wiki"
-       target="_blank">{{ emoji.help | safe }}</a></span>
+  <a class="emoji"
+     href="https://github.com/siznax/moo/wiki"
+     target="_blank">{{ emoji.help | safe }}</a>
 
 </p>
