@@ -3,11 +3,12 @@
 {% block body %}
 
 <p>
+  <a href="/">{{ emoji.app | safe }}</a>
   {{ "{:,}".format(results | length) }}
   results for {{ terms }}
 </p>
 
-<div style="text-align: left; color: silver;">
+<div class="left">
 
 <ol>
   {% for item in results %}
