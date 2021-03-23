@@ -64,6 +64,14 @@ table td {
     padding: 2px 4px;
 }
 
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
 
 /** basic colors **/
 
