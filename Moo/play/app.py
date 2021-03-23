@@ -29,6 +29,7 @@ app.config.from_object(config)
 
 base = app.config['BASE']
 index = lib.index(app.config)
+sindex = lib.search_index(index)
 total = len(index)
 albums = lib.albums(base, index)
 
@@ -37,7 +38,6 @@ genres = lib.counts(albums)
 artists = lib.counts(albums, metakey='artist')
 encodings = lib.counts(albums, metakey='encoding')
 years = lib.counts(albums, metakey='year')
-
 
 @app.route('/')
 def root():
@@ -243,6 +243,19 @@ def album_data(alkey, index):
         raise ValueError('{} has no METADATA'.format(quote(alkey)))
 
     return alb, metadata
+
+
+@app.route('/find/<path:terms>')
+def search(terms, methods=['GET', 'POST']):
+
+    if request.method == 'POST':
+        data = request.form
+        return data
+
+    return render_template(
+        'results.html',
+        results=lib.search(sindex, terms),
+        terms=terms)
 
 
 def serve_album(alkey, index, albums, track_num=1):

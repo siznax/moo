@@ -566,6 +566,74 @@ def rekey_mp4_tags(tags):
     return _
 
 
+def search(sindex, terms):
+    '''
+    returns list of results matching terms given sindex (search index)
+    '''
+    results = set()
+
+    for tup in sindex:
+        if terms.lower() in tup[0].lower():
+            results.add(('album', tup[:1]))
+            continue
+
+        if terms.lower() in tup[1].lower():
+            results.add(('artist', tup[:2]))
+            continue
+
+        for title in tup[2:]:
+            if terms.lower() in title.lower():
+                results.add(('track', tup))
+                continue
+
+    return sorted(list(results))
+
+
+def search_index(index):
+    '''returns full index for search from index of albums'''
+
+    out = list()
+
+    for path in index:  # random.sample(index, 250):
+
+        for track in tracks(path):
+            audio = mutagen.File(str(track))
+
+            if not audio:
+                continue
+
+            tags = audio.tags
+
+            def _get(tags, labels):
+                for lbl in labels:
+                    try:
+                        val = tags.get(lbl)
+                    except ValueError:
+                        pass
+                    if val:
+                        return val
+
+            album = _get(tags, ['ALBUM', 'album', 'TALB', '©alb'])
+            artist = _get(tags, ['ARTIST', 'artist', 'TPE1', '©ART'])
+            title = _get(tags, ['TITLE', 'title', 'TIT2', '©nam'])
+
+            if hasattr(album, 'text'):
+                album = album.text
+            if hasattr(artist, 'text'):
+                artist = artist.text
+            if hasattr(title, 'text'):
+                title = title.text
+
+            if not title:
+                name, ext = os.path.splitext(Path(track).name)
+                title = [name]
+
+            if album and artist and title:
+                out.append((album[0], artist[0], title[0]))
+
+    return out
+
+
 def sorted_tracks(meta):
     '''
     returns album metadata as dict with keys sorted by disc and then
@@ -648,8 +716,9 @@ def tags(base, alkey, track_fname):
 
             return tags
 
+
 def tracks(fpath):
     '''
     returns a list of tracks from a filepath
     '''
-    return [str(x) for x in Path(fpath).iterdir() if not x.name.startswith('.')]
+    return [str(x) for x in Path(fpath).iterdir() if x.is_file()]
