@@ -7,6 +7,8 @@ import json
 import os
 import random
 import string
+import sys
+import time
 
 from collections import Counter
 from io import BytesIO
@@ -590,9 +592,14 @@ def search(sindex, terms):
 
 
 def search_index(index):
-    '''returns full index for search from index of albums'''
-
+    '''
+    returns full index for search from index of albums
+    '''
+    count = 0
     out = list()
+    start = time.time()
+
+    print('> Moo.lib.search_index {}'.format(len(index)))
 
     for path in index:  # random.sample(index, 250):
 
@@ -630,6 +637,14 @@ def search_index(index):
 
             if album and artist and title:
                 out.append((album[0], artist[0], title[0]))
+
+        if count and count % 100 == 0:
+            print('> Moo.lib.search_index {}/{}'.format(count, len(index)))
+
+        count += 1
+
+    print('> Moo.lib.search_index {:,} seconds to index {} albums'.format(
+        int(time.time() - start), len(index)))
 
     return out
 
