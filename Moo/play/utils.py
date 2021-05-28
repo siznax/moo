@@ -3,10 +3,20 @@ Moo Utilities
 ~~~~~~~~~~~~~
 '''
 
+import os
+import time
+
 from math import floor, ceil
 
 
-def h_m(seconds, colons=False):
+def file_age(filepath):
+    '''
+    returns seconds since filepath modified (mtime)
+    '''
+    return int(time.time() - os.path.getmtime(filepath))
+
+
+def hours_minutes(seconds, colons=False):
     '''returns h(ours) m(inutes) from seconds'''
     out = list()
     minute = 60
