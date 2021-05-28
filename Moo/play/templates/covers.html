@@ -1,10 +1,6 @@
 <link rel="stylesheet" type="text/css" href="/static/covers.css"></link>
 
-{% include "recently-played.html" %}
-
 <div id="covers" class="clr-3">
-
-  {% include "covers-heading.html" %}
 
   {% for path in albums %}
 
@@ -17,8 +13,11 @@
       <a href="/album/{{ href | urlencode }}"
          title="{{ alb }}">
         <img src="/img/{{ href | urlencode }}"
-             decoding="sync"
-             loading="lazy"></a>
+             decoding="sync" loading="lazy"></a>
+    </div>
+
+    <div class="clr-c">
+      <b>{{ album.album }}</b>
     </div>
 
     <div style="white-space: nowrap">
@@ -26,20 +25,10 @@
         {{ album.artist }}</a>
     </div>
 
-    <div class="clr-c">
-      <b>{{ album.album }}</b>
-    </div>
-
     <div>
       <a href="/year/{{ album.year }}">{{ album.year }}</a>
       &centerdot;
       <a href="/genre/{{ album.genre | safe }}">{{ album.genre }}</a>
-      &centerdot;
-        {{ album.tracks }}
-      <div class="box encoding">
-        <a href="/encoding/{{ album.encoding }}">
-          {{ album.encoding }}</a>
-      </div>
     </div>
 
   </div>

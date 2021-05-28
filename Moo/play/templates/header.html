@@ -1,6 +1,32 @@
+<link rel="stylesheet" href="/static/buttons.css">
+<link rel="stylesheet" href="/static/counts.css">
+
 <div id="header">
+  {% include "search-form.html" %}
+
   {% include "facet-buttons.html" %}
-  {% include "genre-buttons.html" %}
+
+  {% if counts["artist"] | length > 1 %}
+  {% include "artist-counts.html" %}
+  {% endif %}
+
+  {% if counts["genre"] | length > 1 %}
+  {% include "genre-counts.html" %}
+  {% endif %}
+
+  {% if counts["year"] | length > 1 %}
+  {% include "year-counts.html" %}
+  {% endif %}
+
+  {% if counts["format"] | length > 1 %}
+  {% include "format-counts.html" %}
+  {% endif %}
+
   {% include "alpha-buttons.html" %}
-  {% include "emoji-buttons.html" %}
 </div>
+
+{% include "config-buttons.html" %}
+
+{% if request.path == "/" %}
+{% include "recently-played.html" %}
+{% endif %}

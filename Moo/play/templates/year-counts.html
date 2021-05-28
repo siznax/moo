@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="/static/counts.css">
+
+<div id="year-counts" class="counts">
+
+  <span class="heading"><b>Years</b>
+    ({{ counts['year'] | length }})</span>
+
+  {%- for year in counts["year"] | sort -%}
+  {%- set num = counts["year"][year] -%}
+  <div class="count-box {% if num >= 25 %}highlight{% endif %}">
+    <a href="/year/{{ year }}">{{
+      year }}</a><span>{{ num }}</span></div>
+  {%- endfor -%}
+
+</div>

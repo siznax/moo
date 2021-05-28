@@ -1,0 +1,15 @@
+<div id="track-summary" class="clr-3 center" style="display: none">
+
+  <span>
+    {{ metadata | length }}
+    <a class="box encoding" 
+       atitle="Go to format"
+       target="_blank"
+       href="/format/{{ info.encoding }}">{{ info.encoding }}</a>
+  </span>
+
+  <span style="margin: 0 16px">{{ info.size }}</span>
+
+  <span>{{ info.length }}</span>
+
+</div>

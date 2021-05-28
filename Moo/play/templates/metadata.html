@@ -1,30 +1,14 @@
-<link rel="stylesheet" type="text/css" href="/static/metadata.css">
+<link rel="stylesheet" href="/static/metadata.css">
 
 <div id="metadiv" class="clr-3 center" style="display: none">
 
-  <p>
-    <i>{{ track.title }}</i>
-  </p>
-
-  {% include "tracklist-links.html" %}
-
-  <p>&#x266B;</p>
-
-  {% include "tracklist-encoding.html" %}
-  
   <table id="metadata">
-
-    {% for field in track | sort %}
-
+    {%- for field in track | sort -%}
     <tr>
       <td class="clr-4">{{ field }}</td>
       <td>{{ track[field] }}</td>
     </tr>
-
-    {% endfor %}
-
+    {%- endfor -%}
   </table>
-
-  <p>{{ config.PACKAGE }} {{ config.VERSION }}</p>
 
 </div>

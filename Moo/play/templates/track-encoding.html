@@ -1,0 +1,37 @@
+{% if track.encoder %}
+{% set encoder = track.encoder %}
+{% set enc = track.encoder.lower() %}
+{% endif %}
+
+{% if track.encoder_info %}
+{% set encoder = track.encoder_info %}
+{% set enc = track.encoder_info.lower() %}
+{% endif %}
+
+{% set title = encoder or "Unknown encoder" %}
+
+{% if track.bitrate %}
+{% set bitrate = "{} Kbps".format((track.bitrate / 1000) | int) %}
+{% endif %}
+
+<img
+   {%- if encoder and enc.startswith('itunes') -%}
+   alt="iTunes" src="/static/ico/itunes.png"
+   {%- elif encoder and enc.startswith('lavf') -%}
+   alt="FFmpeg" src="/static/ico/ffmpeg.png"
+   {%- elif encoder and enc.startswith('lame') -%}
+   alt="LAME" src="/static/ico/lame.gif"
+   {%- elif encoder and enc.startswith('x') -%}
+   alt="XLD" src="/static/ico/XLD.png"
+   {%- else -%}
+
+   {%- if track.codec and track.codec.upper() == 'ALAC' -%}
+   alt="Apple Lossless" src="/static/ico/warning.png"
+   {%- endif -%}
+
+   {%- if track.codec and track.codec.upper() == 'FLAC' -%}
+   alt="FLAC" src="/static/ico/flac.png"
+   {%- endif -%}
+
+   {%- endif -%}
+   title="{{ title }} ({{ bitrate }})"></a>

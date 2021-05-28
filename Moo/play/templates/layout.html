@@ -13,10 +13,10 @@
 
     <link rel="stylesheet" href="/static/style.css">
 
-    <link rel="stylesheet" href="/static/custom-dark.css">
+    <!-- <link rel="stylesheet" href="/static/custom-dark.css"> -->
 
     {% if request.path == '/' %}
-    <title>moo {{ config.VERSION }}</title>
+    <title>moo</title>
     {% endif %}
 
     {% if (request.path.startswith('/alpha')
@@ -29,6 +29,10 @@
 
     {% if request.path == '/docs' %}
     <title>moo {{ config.VERSION }} docs</title>
+    {% endif %}
+
+    {% if request.path.startswith('/find') %}
+    <title>/find: {{ request.path.split('/')[-1] }}</title>
     {% endif %}
 
     {% if track %}
@@ -52,21 +56,19 @@
     {% endif %}
 
     {% endif %}
-
   </head>
-  <body onload="init({{ config.VERSION }});" class="dark">
+  <body onload="" class="">
 
     {% block body %}{% endblock %}
 
+    {% if "admin" not in request.path %}
     <script src="/static/js/audio.js"></script>
+    {% endif %}
 
     {% if request.path.startswith('/album')
        or request.path.startswith('/track') %}
-    <script src="/static/js/keyboard.js"></script>
-    {% endif %}
-
-    {% if not request.path.startswith('/find') %}
     <script src="/static/js/clock.js"></script>
+    <script src="/static/js/keyboard.js"></script>
     {% endif %}
 
   </body>

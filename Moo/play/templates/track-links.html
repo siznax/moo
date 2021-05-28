@@ -1,0 +1,81 @@
+<div id="track-links" style="display: none">
+
+  {% include "track-encoding.html" %}
+
+  {% if track.album %}
+
+  <a class="pill" 
+     target="_blank" 
+     title="Go to Discogs albums"
+     href="https://discogs.com/search/?q=%22{{ track.album |
+           urlencode }}%22">
+    <img alt="Discogs" src="/static/ico/discogs.png"></a>
+
+  {% endif %}
+
+  {% if track.artist %}  
+
+  {% set slug= "{}-{}".format(
+  "-".join(track.artist.split()).replace("&", "and").replace("'", ''),
+  "-".join(track.title.split())) %}
+  <a target="_blank" 
+     title="Go to Genius.com lyrics"
+     href="https://genius.com/{{ slug | lower }}-lyrics">
+    <img alt="Genius.com" src="/static/ico/genius.com.png"></a>
+
+  {% endif %}
+
+  {% set iaq="https://archive.org/search.php?query=mediatype:%22audio%22" %}
+
+  {% if track.artist %}  
+  {% set iac="creator:%22" + track.artist | urlencode + "%22" %}
+  {% endif %}
+
+  {% if track.album %}  
+  {% set iat=" ".join(track.album.split()[:3]) %}
+  {% endif %}
+
+  {% if track.artist or track.album %}
+
+  <a target="_blank" 
+     title="Internet Archive items"
+     href="{{ iaq }}+{{ iac }}+{{ iat | urlencode }}&sort=-downloads">
+    <img alt="Internet Archive" src="/static/ico/archive.org.jpg"></a>
+
+  {% if track.artist %}  
+
+  <a target="_blank"
+     title="MusicBrainz Release"
+     {% if track.MBID %}
+     href="https://musicbrainz.org/release/{{ track.MBID }}"
+     {% else %}
+     href="https://musicbrainz.org/search?query={{ 
+           track.artist | urlencode }}+{{ 
+           track.album | urlencode }}&type=release"
+     {% endif %}>
+    <img alt="MusicBrainz" src="/static/ico/music-brainz.png"></a>
+
+  {% endif %}
+
+  {% if track.URL %}
+
+  <a target="_blank" href="{{ track.URL | safe }}">
+    <img alt="URL" src="/static/ico/web.png"></a>
+
+  {% endif %}
+
+  <a target="_blank" 
+     title="Wikipedia page"
+     href="https://en.wikipedia.com/wiki/{{ track.artist }}">
+    <img alt="Wikipedia" src="/static/ico/wikipedia.png"></a>
+
+  <a target="_blank" 
+     title="YouTube videos"
+     href="https://youtube.com/results?search_query=%22{{
+           track.artist | urlencode }}%22+%22{{ 
+           track.title | urlencode }}%22">
+    <img alt="YouTube" src="/static/ico/youtube.png"></a>
+
+  {% endif %}
+
+</div>

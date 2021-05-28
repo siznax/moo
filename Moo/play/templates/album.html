@@ -5,12 +5,18 @@
 <div id="album-cover">
   <img
      alt="album cover"
+     onclick="playOrPause()"
      src="/img{{ slash }}{{ alkey | urlencode }}"
      style="width: 100%; aspect-ratio: 1/1;">
 </div>
 
 <div id="album-audio">
-  {% include "audio-table.html" %}
+  {% include "clock.html" %}
+  {% include "audio.html" %}
+  {% include "track-links.html" %}
+  {% include "album-info.html" %}
   {% include "tracklist.html" %}
+  {% include "track-summary.html" %}
   {% include "metadata.html" %}
+  {% include "footer.html" %}
 </div>

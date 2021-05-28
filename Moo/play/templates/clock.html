@@ -1,45 +1,21 @@
-<link rel="stylesheet" href="/static/clock.css">
-
 <div id="clock">
 
-  <div style="float: left;">
+  <a href="/" class="emoji"
+     target="_blank">{{ emoji.app | safe }}</a>
 
-    <a href="/" class="emoji" target="_blank">{{ emoji.app | safe }}</a>
+  <a class="emoji"
+     href="/random">{{ emoji.random | safe }}</a>
 
-    <a href="#" class="emoji" onclick="Dark()">{{ emoji.dark | safe }}</a>
+  <span id="time" style="opacity: 0.8">--:-- --</span>
 
-    <a href="#" class="emoji" onclick="Bright()">{{ emoji.light | safe }}</a>
+  <span id="weather">&#x26A1;</span>
 
-    <a class="emoji" href="/random">{{ emoji.random | safe }}</a>
+  <a class="emoji" href="/">&#x274C;</a>
 
-    <a href="#" class="emoji hr-75" onclick="gotoPrev()"
-       >{{ emoji.prev | safe }}</a>
-
-    <a href="#" class="emoji"
-       onclick="toggle('tracklist'); toggle_hidden('metadiv')">
-      <span id="track-number" class="clr-c">
-        {%- if (track.disc and track.disc | int - 1) -%}{{ track.disc
-        }}.{%- endif -%}{{ "{:02d}".format(track.track | int) }}</span></a>
-
-    <a href="#" class="emoji hr-75" onclick="gotonext()"
-       >{{ emoji.next | safe }}</a>
-
-  </div>
-
-  <div style="float: right; text-align: right;">
-    <span id="time" class="clr-5" style="margin-left: 2px">--:-- --</span>
-    <span id="weather" style="margin-right: 2px">&#x26A1;</span>
-    {%-
-    if request.path.startswith('/album')
-    or request.path.startswith('/track')
-    or request.path.startswith('/docs')
-    -%}
-    <div style="float: right; margin-top: 2px;">
-      <a href="/" class="button" style="padding: 2px 4px">&times;</a>
-    </div>
-    {%- else -%}
-    <a href="/random" class="emoji">{{ emoji.random | safe }}</a>
-    {%- endif -%}
-  </div>
+  <a href="#more" class="emoji"
+     onclick="toggle_hidden('metadiv');
+              toggle_hidden('track-links');
+              toggle_hidden('track-summary');
+              toggle_hidden('footer');">{{ emoji.more | safe }}</a>
 
 </div>

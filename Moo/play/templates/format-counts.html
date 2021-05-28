@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="/static/counts.css">
+
+<div id="format-counts" class="counts">
+
+  <span class="heading"><b>Formats</b>
+    ({{ counts['format'] | length }})</span>
+
+  {%- for format in counts["format"] | sort -%}
+  {%- set num = counts["format"][format] -%}
+  <div class="count-box">
+    <a href="/format/{{ format }}">{{
+      format }}</a><span>{{ num }}</span></div>
+  {%- endfor -%}
+
+</div>

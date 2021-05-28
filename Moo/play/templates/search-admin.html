@@ -1,0 +1,51 @@
+<div id="search-admin" class="admin-box">
+
+  <h3>Search admin</h3>
+
+  <table class="data">
+    <tr>
+      <td>New age:</td>
+      <td>{{ (ages.new / 86400) | int }} days</td>
+      <td>{{ (ages.new / 3600) | int }} hours</td>
+      <td>{{ ages.new }} seconds</td>
+    </tr>
+
+    <tr>
+      <td>Index age:</td>
+      <td>{{ (ages.search / 86400) | int }} days</td>
+      <td>{{ (ages.search / 3600) | int }} hours</td>
+      <td>{{ ages.search }} seconds</td>
+    </tr>
+
+    <tr>
+      <td>Index finished:</td>
+      <td colspan="3">{{ updated.strftime("%c") }}</td>
+    </tr>
+
+    <tr>
+      <td>Index time:</td>
+      <td colspan="3">{{ "{:,}".format(sindex.seconds) }} seconds</td>
+    </tr>
+
+    <tr>
+      <td>Index tracks:</td>
+      <td colspan="3">{{ "{:,}".format(sindex.length) }}</td>
+    </tr>
+
+    <tr>
+      <td>Tasks:</td>
+      <td colspan="3">{{ tasks }}</td>
+    </tr>
+
+  </table>
+
+  <p>
+    {% if tasks == "RUNNING" %}
+    <span class="box">build-search</span>
+    {% else %}
+    {{ emoji.run | safe }}
+    <a class="box" href="/build-search">build-search</a>
+    {% endif %}
+  </p>
+
+</div>

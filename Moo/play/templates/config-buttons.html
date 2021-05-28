@@ -1,0 +1,31 @@
+<div id="config-buttons">
+
+  <span id="artist-buttons">
+    {% for label in config.ARTIST_BUTTONS | sort %}
+    {% set artist = config.ARTIST_BUTTONS[label] %}
+    {%- if request.path == '/artist/' + artist -%}
+    <b class="button">{{ label }}</b>
+    {%- else -%}
+    <a class="button" href="/artist/{{ artist }}">{{ label }}</a>
+    {%- endif -%}
+    {% endfor %}
+  </span>
+
+  <span id="genre-buttons">
+    {% for label in config.GENRE_BUTTONS %}
+    {% if label == request.path.split('/')[-1] %}
+    <b class="button">{{ label }}</b>
+    {% else %}
+    <a class="button clr-5" href="/genre/{{ label }}">{{ label }}</a>
+    {% endif %}
+    {% endfor %}
+  </span>
+
+  <span id="station-buttons">
+    {% for label in config.STATION_BUTTONS | sort %}
+    <a class="button"
+       href="{{ config.STATION_BUTTONS[label] }}">{{ label }}</a>
+    {% endfor %}
+  </span>
+
+</div>

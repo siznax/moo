@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="/static/audio.css">
+
+<div id="audio">
+
+  <div id="track-title" class="clr-c">
+    <span
+       style="cursor: pointer"
+       onclick="window.location.hash='#metadata'">{{ track.title }}</span>
+  </div>
+
+  {% if request.path.startswith('/track') %}
+  {% set autoplay = 'autoplay' %}
+  {% endif %}
+
+  <audio controls {{ autoplay }}>
+    <source src="{{ track.src }}" type="{{ track.type }}"/>
+  </audio>
+
+  <div id="track-controls">
+
+    <a href="#" onclick="gotoPrev()">{{ emoji.prev | safe }}</a>
+    <span id="track-number">{{ track.track }} / {{ metadata | length }}</span>
+    <a href="#" onclick="gotoNext()">{{ emoji.next | safe }}</a>
+
+  </div>
+
+</div>

@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+{% include "search-form.html" %}
+
+{% if terms %}
+
+<link rel="stylesheet" href="/static/counts.css">
+
+<div>Search results for "{{ terms }}"</div>
+
+<div style="margin: 16px">
+
+  <span class="count-box">
+    <a href="#albums">albums</a><span>{{
+      albums | length }}</span></span>
+
+  <span class="count-box">
+    <a href="#artists">artists</a><span>{{
+      artists | length }}</span></span>
+
+  <span class="count-box">
+    <a href="#tracks">tracks</a><span>{{
+      tracks | length }}</span></span>
+
+</div>
+
+{% if albums %}
+<div id="search-albums">
+  <a name="albums"></a>
+  {% for entry in albums %}
+  <div class="search-album">
+    <a href="/album{{ entry | urlencode }}">
+      <img width="128" height="128" src="/img{{ entry | urlencode }}"></a>
+    <div>{{ albums[entry][1] }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if artists %}
+<div id="search-artists">
+  <a name="artists"></a>
+  {% for entry in artists %}
+  <div class="button">
+    <a href="/artist/{{ entry }}">{{ entry}}</a>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if tracks %}
+<div id="search-tracks">
+  <a name="tracks"></a>
+  <table class="data">
+    <tr>
+      <th>Track</th>
+      <th>Album</th>
+      <th>Artist</th>
+    </tr>
+    {% for entry in tracks | sort %}
+    <tr>
+      <td><i>{{ entry[3] }}</i></td>
+      <td><a href="/album{{ entry[0] }}">{{ entry[1] }}</a></td>
+      <td><a href="/artist/{{ entry[2] }}">{{ entry[2] }}</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+
+
+{% endif %}
+
+{% include "footer.html" %}
+
+{% endblock %}

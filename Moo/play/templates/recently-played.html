@@ -1,5 +1,15 @@
-{% if recent %}
-<p class="box">
-  Recently played
-</p>
-{% endif %}
+{%- if history -%}
+<div style="margin: 0px 32px 32px 32px">
+
+  <div id="recent">
+    {%- for album in history | reverse -%}
+    <a href="/album{{ album | urlencode }}"
+       ><img
+           decoding="sync" loading="lazy"
+           width="128" height="128"
+           src="/img{{ album | urlencode }}"></a>
+    {%- endfor -%}
+  </div>
+
+</div>
+{%- endif -%}

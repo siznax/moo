@@ -1,13 +1,11 @@
-<p>
-
+<div id="alpha-buttons">
   {% for letter in alpha | sort %}
 
   {% if request.path == "/alpha/" + letter %}
-  <b>{{ letter }}</b>
+  <b class="box">{{ letter }}</b>
   {% else %}
   <a href="/alpha/{{ letter }}">{{ letter }}</a>
   {% endif %}
 
   {% endfor %}
-
-</p>
+</div>

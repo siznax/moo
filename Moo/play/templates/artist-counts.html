@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="/static/counts.css">
+
+<div id="artist-counts" class="counts">
+
+  <span class="heading"><b>Artists</b>
+    ({{ counts['artist'] | length }})</span>
+
+  {%- for artist in counts["artist"] | sort -%}
+  {%- set num = counts["artist"][artist] -%}
+  <div class="count-box {% if num > 10 %}highlight{% endif %}">
+    <a href="/artist/{{ artist }}">{{
+      artist }}</a><span>{{ num }}</span></div>
+  {%- endfor -%}
+
+</div>

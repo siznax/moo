@@ -1,0 +1,26 @@
+<div id="album-info" class="center clr-3">
+
+  <div id="track-artist">
+    <a class="clr-b sans-serif"
+       href="/artist/{{ track.artist }}">{{ track.artist }}</a>
+  </div>
+
+  <div id="track-album">
+    <a class="clr-c"
+       href="/album{{ slash }}{{ alkey | urlencode }}">{{ track.album }}</a>
+  </div>
+
+  <div id="album-year-genre">
+
+    <a href="/year/{{ info.year }}">
+      {{ info['year'] or "<small>YEAR</small>" | safe }}</a>
+
+    &middot;
+
+    <a class="clr-3"
+       href="/genre/{{ info['genre'] or 'None' }}">{{ info['genre'] 
+      or "<small>GENRE</small>" | safe }}</a>
+
+  </div>
+
+</div>

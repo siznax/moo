@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1>{{ emoji.app | safe }} moo</h1>
+
+<p><i>your music in your browser</i></p>
+
+{% include "search-admin.html" %}
+<br>
+
+{% include "tips.html" %}
+<br>
+
+<div id="config" class="admin-box">
+  <h3>Configuration</h3>
+  <pre class="left">{{ config | pprint }}</pre>
+</div>
+
+{% include "footer.html" %}
+
+{% endblock %}
