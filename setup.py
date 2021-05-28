@@ -5,6 +5,10 @@ setup(
     author='Steve Sisney',
     author_email='steve@siznax.net',
     packages=find_packages(),
-    install_requires=['flask', 'mutagen', 'unidecode'],
-    version='0.2'
+    install_requires=[
+        'flask',
+        'flask-executor',
+        'mutagen',
+    ],
+    version='0.3'
 )
