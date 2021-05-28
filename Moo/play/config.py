@@ -4,19 +4,21 @@ Moo config
 
 AUTHOR = 'siznax'
 PACKAGE = 'moo'
-VERSION = '0.2'
+VERSION = '0.3'
 WWW = 'https://github.com/siznax/moo'
 
-BASE = '/Users/steve/Music/Moo'
+BASEFILE = 'BASE'
+HISTORY = 'HISTORY'
+SINDEX = 'search.json'
 
 ARTIST_BUTTONS = {
+    # "label": "artist",
 }
 
 GENRE_BUTTONS = [
-    'Afro', 'Alt', 'Blues', 'Classical', 'Country', 'Folk', 'Funk',
-    'Hip', 'Jazz', 'Latin', 'Metal', 'Pop', 'Psych', 'Punk', 'R&B',
-    'Rock', 'Reggae', 'Soul', 'Soundtrack', 'Spoken', 'World'
+    "Blues", "Classical", "Hip-Hop", "Jazz", "Punk", "R&B", "Rock", "Soul"
 ]
 
-STATIONS = {
+STATION_BUTTONS = {
+    # "label": "href",
 }
