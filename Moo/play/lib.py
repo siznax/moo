@@ -2,42 +2,43 @@
 Methods supporting Moo.play
 '''
 
-import hashlib
-import json
+import logging
 import os
 import random
-import string
-import sys
 import time
 
-from collections import Counter
+from collections import Counter, OrderedDict
 from io import BytesIO
-from math import ceil
 from pathlib import Path
 from urllib.parse import quote
 
 import mutagen
 
-from unidecode import unidecode
-from flask import app, send_file, url_for
+from flask import send_file
 
 from .tags import mp3_fields, mp4_fields
-from .utils import h_m
+from .utils import hours_minutes
 
-EMOJI = {
-    'app': '&#x1F3B7;',
+
+EMOJI = {  # CLDR emoji names
+    'admin': "\u2699\uFE0F",  # "\N{Gear}",
+    'app': "\N{saxophone}",
     'base': '&#x1F3B5;',
-    'dark': '&#x1F505;',  # &#x1F505; U+1F505 Dim Button
     'fleuron': '&#x2766;',
-    'heart': '&#x2661;',
-    'hearted': '&#x1F49C;',
+    'heart': "\N{black heart suit}",
+    'hearted': "\N{anatomical heart}",
     'help': '&#x2754;',
-    'light': '&#x1F506;',  # &#x1F506; U+1F506 Bright Button
-    'next': '&#x23ED;',
+    'history': '&#x1F3B6;',
+    'more': '&#x1F52E;',
+    'next': "\N{Black Right-Pointing Double Triangle with Vertical Bar}",
+    'new': '&#x1F195;',
     'none': '&#x1F6AB;',
     'notfound': '&#x1F62D;',
-    'prev': '&#x23EE;',
+    'prev': "\N{Black Left-Pointing Double Triangle with Vertical Bar}",
     'random': '&#x1F3B2;',
+    'run': '&#x1F6FC;',
+    'search': '&#x1F50D;',
+    'shades': '&#x1F576;',
     'star': '&#x2606;',
     'starred': '&#x2B50;',
 }
@@ -51,7 +52,10 @@ MEDIATYPES = {
     "MPEG": "audio/mpeg",
     "OGG": "audio/ogg",
     "WAV": "audio/wav",
-} 
+}
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 def album(key, index):
@@ -67,7 +71,6 @@ def album_info(track, metadata):
     '''
     returns dict of album info
     '''
-    album_artist = None
     first_artist = None
     length = 0.0
     out = dict()
@@ -85,16 +88,17 @@ def album_info(track, metadata):
 
     artist = track.get('album_artist') or track.get('artist')
 
+    out['album'] = track.get('album')
     out['artist'] = artist.split(';')[0] if artist else None
     out['encoding'] = track.get('encoding')
     out['genre'] = track.get('genre')
     out['ntracks'] = len(metadata)
 
     if 'year' in track:
-       out['year'] = track['year'][:4]
+        out['year'] = track['year'][:4]
 
     if int(length):
-        out['length'] = h_m(int(length))
+        out['length'] = hours_minutes(int(length))
 
     out['size'] = "{}MB".format(round(size / 1e6, 1))
 
@@ -105,41 +109,31 @@ def albums(base, index):
     '''
     returns dict of minimal album metadata
     '''
-       
+    logging.info("Getting ALBUMS %s" % time.strftime('%X'))
+
     out = dict()
-    dupes = dict()
 
-    for ind,path in enumerate(index):
+    for path in index:
         pobj = Path(path)
-        tracks = len([x for x in pobj.iterdir()])
 
-        try:
-            meta = metadata(base, pobj, single=True)['01']
-        except KeyError:
-            meta = {'path': path, 'tracks': tracks}
+        meta = metadata(base, pobj, single=True)
 
-        year = meta['year'][:4] if meta.get('year') else 'None'
+        if not meta.get('album'):
+            continue  # index, albums diverge
+
         artist = meta.get('album_artist') or meta.get('artist')
+        year = meta['year'][:4] if meta.get('year') else 'None'
 
         pruned = {
             'album': meta.get('album'),
             'artist': artist.split(';')[0] if artist else 'None',
-            'encoding': meta.get('encoding'),
             'genre': meta.get('genre') or 'None',
-            'index': ind,
-            'mtime': meta.get('mtime'),
-            'tracks': tracks,
+            'mtime': meta.get('mtime', 0),
             'year': year}
 
-        if path in out:
-            if path not in dupes:
-                dupes[path] = list()
-            dupes[path].append(path)
-        else:
-            out[path] = pruned
+        out[path] = pruned
 
-    if dupes:
-        raise ValueError('Found duplicates: {}'.format(dupes))
+    logging.info(f"ALBUMS DONE {time.strftime('%X')}")
 
     return out
 
@@ -159,6 +153,45 @@ def alpha(albums, mtag='artist'):
     return dict(letters)
 
 
+def base(config):
+    '''
+    returns BASE directory from BASEFILE
+    '''
+    if not os.path.exists(config['BASEFILE']):
+        return
+
+    with open(config['BASEFILE']) as _:
+        return _.read().strip()
+
+
+def base_link(base):
+    '''
+    makes symbolic link to BASE in Moo/play/static
+    '''
+    dst = os.path.join(os.getcwd(), 'Moo', 'play', 'static', 'Moo')
+
+    if not os.path.exists(base):
+        raise ValueError(f"BASE not found: {base}")
+
+    logging.info('Linking BASE to static/Moo')
+    logging.info(f"> os.symlink({base}, {dst})")
+
+    if os.path.exists(dst):
+        if not os.path.islink(dst):
+            raise ValueError(f'Directory exists: {dst}')
+        os.unlink(dst)
+
+    os.symlink(base, dst, target_is_directory=True)
+
+
+def base_write(base):
+    '''
+    write base input to BASE file
+    '''
+    with open('BASE', 'w') as _:
+        _.write(base)
+
+
 def control(base, index, metadata, track_ind):
     '''
     returns next, prev, and random track numbers as dict
@@ -169,7 +202,7 @@ def control(base, index, metadata, track_ind):
 
     if _next > ntracks:
         _next = 0
-    
+
     if prev < 1:
         prev = 0
 
@@ -177,21 +210,26 @@ def control(base, index, metadata, track_ind):
     alkey = str(index[ind]).replace(base, '')
 
     return {
-        'next': _next, 
+        'next': _next,
         'prev': prev,
         'ralbum': alkey,
         'rtrack': random.choice(range(ntracks)) + 1,
         'track_num': track_ind + 1}
 
 
-def counts(albums, metakey='genre'):
+def counts(albums, metakey='genre', limit=None):
     '''
     returns counter of genres from albums
     '''
     count = Counter()
 
     for item in albums:
-        count[albums[item].get(metakey) or 'None'] +=1
+        count[albums[item].get(metakey) or 'None'] += 1
+
+    if limit:
+        for item in count:
+            if count[item] > limit:
+                del count[item]
 
     return dict(count)
 
@@ -215,7 +253,10 @@ def cover(fpath, tpath=None):
         mimetype=mtype)
 
 
-def flat_data(mfile, fpath):
+def flat_data(mfile):
+    '''
+    returns flattened dict from audio file metadata
+    '''
     enc = type(mfile).__name__
     tags = dict(mfile.tags)
     flat = dict()
@@ -237,7 +278,7 @@ def flat_data(mfile, fpath):
 
     if 'track' in flat:
         flat['track'] = flat_val(flat, 'track')
-    
+
     if 'disc' in flat:
         flat['disc'] = flat_val(flat, 'disc')
 
@@ -289,24 +330,38 @@ def get_apic(fpath, tpath=None):
             return track_img
 
 
-def index(config, sort=None):
+def get_history(base, filepath):
     '''
-    returns list of paths that do not contain directories, 
+    returns list of recently played albums with valid paths
+    '''
+    out = list()
+
+    with open(filepath) as _:
+        for line in _:
+            entry = line.strip()
+            if os.path.exists(os.path.join(base, entry[1:])):
+                out.append(entry)
+
+        return out
+
+
+def index(base, sort=None):
+    '''
+    returns list of paths that do not contain directories,
     reverse-sorted by mtime (default), atime, or ctime
     '''
-    # base = Path(config['BASE'])
-    # return [x for x in base.rglob('*') if x.is_dir()]
+    logging.info(f"Computing INDEX {time.strftime('%X')}")
 
     albums = list()  # paths that do not contain directories
-
     sort_key = os.path.getmtime
+
     if sort:
         if sort == 'atime':
             sort_key = os.path.getatime
         if sort == 'ctime':
             sort_key = os.path.getctime
 
-    for path in Path(config['BASE']).rglob('*'):
+    for path in Path(base).rglob('*'):
         leaf = True
 
         try:
@@ -322,6 +377,8 @@ def index(config, sort=None):
 
         if leaf:
             albums.append(str(path))
+
+    logging.info(f"INDEX Done {time.strftime('%X')}")
 
     return sorted(albums, key=sort_key, reverse=True)
 
@@ -348,21 +405,21 @@ def metadata(base, album, single=False):
         encoding = type(audio).__name__
         data = dict()
 
-        if not hasattr(audio, 'tags'):
+        if not audio or not hasattr(audio, 'tags'):
             continue
 
         try:
-            data = flat_data(audio, fpath)
+            data = flat_data(audio)
             data.update(vars(audio.info))
             data['type'] = audio.mime[0]
-        except (AttributeError, TypeError):
-                pass
+        except AttributeError:
+            raise
 
         data['encoding'] = encoding
         data['src'] = quote(key.replace(base, '/static/Moo'))
 
         if 'title' not in data:
-            name, ext = os.path.splitext(fpath.name)
+            name, _ = os.path.splitext(fpath.name)
             data['title'] = name
 
         if 'track' not in data:
@@ -370,15 +427,17 @@ def metadata(base, album, single=False):
 
         data.update(stat(str(fpath)))
 
+        data['uri'] = fpath.as_uri()
+
         out[key] = data
-        
+
         if single is True and data:
-            break
+            return data
 
     out = parse_fnames(out)
 
     return sorted_tracks(out)
-    
+
 
 def parse_fnames(mdata):
     updated = False
@@ -440,13 +499,20 @@ def prefixed(titles):
     Note: this is an experimental feature.
 
     EXAMPLE INPUT = [
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 1. Allegro Moderato',
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 2. Scherzo: Allegro',
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 3. Andante Cantabile',
-        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke" - 4. Allegro Moderato, Presto',
-        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 1. Allegro Vivace E Con Brio',
-        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 2. Largo Assai Ed Espressivo',
-        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost" - 3. Presto'
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke"
+            - 1. Allegro Moderato',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke"
+            - 2. Scherzo: Allegro',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke"
+            - 3. Andante Cantabile',
+        'Beethoven: Piano Trio #7 In B Flat, Op. 97, "Archduke"
+            - 4. Allegro Moderato, Presto',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost"
+            - 1. Allegro Vivace E Con Brio',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost"
+            - 2. Largo Assai Ed Espressivo',
+        'Beethoven: Piano Trio #5 In D, Op. 70/1, "Ghost"
+            - 3. Presto'
     ]
 
     DESIRED OUTPUT = {
@@ -522,6 +588,7 @@ def rekey_catchall(tags):
 
     return _
 
+
 def rekey_mp3_tags(tags):
     '''
     normalize MP3 tags to ID3
@@ -568,87 +635,6 @@ def rekey_mp4_tags(tags):
     return _
 
 
-def search(sindex, terms):
-    '''
-    returns list of results matching terms given sindex (search index)
-    '''
-    results = set()
-
-    for tup in sindex:
-        if terms.lower() in tup[0].lower():
-            results.add(('album', tup[:1]))
-            continue
-
-        if terms.lower() in tup[1].lower():
-            results.add(('artist', tup[:2]))
-            continue
-
-        for title in tup[2:]:
-            if terms.lower() in title.lower():
-                results.add(('track', tup))
-                continue
-
-    return sorted(list(results))
-
-
-def search_index(index):
-    '''
-    returns full index for search from index of albums
-    '''
-    count = 0
-    out = list()
-    start = time.time()
-
-    print('> Moo.lib.search_index {}'.format(len(index)))
-
-    for path in index:  # random.sample(index, 250):
-
-        for track in tracks(path):
-            audio = mutagen.File(str(track))
-
-            if not audio:
-                continue
-
-            tags = audio.tags
-
-            def _get(tags, labels):
-                for lbl in labels:
-                    try:
-                        val = tags.get(lbl)
-                    except ValueError:
-                        pass
-                    if val:
-                        return val
-
-            album = _get(tags, ['ALBUM', 'album', 'TALB', '©alb'])
-            artist = _get(tags, ['ARTIST', 'artist', 'TPE1', '©ART'])
-            title = _get(tags, ['TITLE', 'title', 'TIT2', '©nam'])
-
-            if hasattr(album, 'text'):
-                album = album.text
-            if hasattr(artist, 'text'):
-                artist = artist.text
-            if hasattr(title, 'text'):
-                title = title.text
-
-            if not title:
-                name, ext = os.path.splitext(Path(track).name)
-                title = [name]
-
-            if album and artist and title:
-                out.append((album[0], artist[0], title[0]))
-
-        if count and count % 100 == 0:
-            print('> Moo.lib.search_index {}/{}'.format(count, len(index)))
-
-        count += 1
-
-    print('> Moo.lib.search_index {:,} seconds to index {} albums'.format(
-        int(time.time() - start), len(index)))
-
-    return out
-
-
 def sorted_tracks(meta):
     '''
     returns album metadata as dict with keys sorted by disc and then
@@ -666,7 +652,7 @@ def sorted_tracks(meta):
 
     discs = list(set(discs))
 
-    for ind, track in sorted(enumerate(meta)):
+    for track in sorted(meta):
         if 'track' in meta[track]:
             tnum = meta[track]['track']
             try:
@@ -730,6 +716,25 @@ def tags(base, alkey, track_fname):
                     tags[item] = vars(audio.tags[item][0])
 
             return tags
+
+
+def top_counts(counts, num=12):
+    '''
+    returns top <num> counts as list of tuples from dict of counts
+    limited by maxcount
+    '''
+    tmp = list()
+    top = OrderedDict()
+
+    for item in counts:
+        tmp.append((counts[item], item))
+
+    for item in sorted(tmp, reverse=True):
+        top[item[1]] = item[0]
+        if len(top) >= num:
+            break
+
+    return top
 
 
 def tracks(fpath):
