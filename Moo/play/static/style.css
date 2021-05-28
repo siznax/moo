@@ -4,6 +4,7 @@ html, body {
     width: 100%;
     height: 100%;
     text-align: center;
+    font-family: sans-serif;
 }
 
 a {
@@ -30,12 +31,24 @@ table td {
     vertical-align: top;
 }
 
+table.data td, table.data th {
+    padding: 4px 8px;
+    border: 1px solid silver;
+}
+
+.border {
+    border: 1px solid silver;
+}
+
 .box {
     display: inline-block;
-
     padding: 4px 8px;
-
     border-radius: 4px;
+}
+
+div.box {
+    margin-right: 8px;
+    margin-bottom: 8px;
 }
 
 .button {
@@ -72,6 +85,20 @@ table td {
     text-align: right;
 }
 
+.admin-box {
+    display: inline-block;
+    margin: 8px;
+    padding: 8px;
+
+    max-width: 720px;
+
+    background-color: whitesmoke;
+    border-radius: 8px;
+
+    vertical-align: top;
+
+    overflow: hidden;
+}
 
 /** basic colors **/
 
@@ -85,7 +112,6 @@ table td {
 .box, .button, .count-card {
     background-color: lavender;
 }
-
 
 /** hue rotate **/
 

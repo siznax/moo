@@ -1,81 +1,19 @@
-div#album-cover {
+#album-cover {
     position: fixed;
     top: 10px; left: 10px;
     width: 61%;
 }
 
-div#album-cover.small, div#album-cover.small img {
+#album-cover.small, #album-cover.small img {
     all: unset;
     display: inline-block;
     width: 100%;
     margin-bottom: -4px;
 }
 
-div#album-cover.thin, div#album-cover.thin img {
+#album-cover.thin, #album-cover.thin img {
     all: unset;
     height: 100%;
     aspect-ratio: 1/1;
 }
 
-div#album-audio {
-    position: absolute;
-    top: 0; left: 63%; width: 36%;
-}
-
-div#album-audio.small {
-    all: unset;
-    display: inline-block;
-    width: 100%;
-}
-
-div#album-audio.thin {
-    all: unset;
-    display: inline-block;
-}
-
-
-div#audio-table {
-    position: sticky;
-    top: 0;
-}
-
-#track-album {
-    font-size: x-large;
-}
-
-#track-artist {
-    font-size: large;
-    font-weight: 100;
-    text-transform: uppercase;
-}
-
-#track-title {
-    font-size: xx-large;
-}
-
-/***************************************************************/
-
-table#album {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    vertical-align: top;
-    text-align: center;
-}
-
-table#album td {
-    /* border: 1px solid silver; */
-}
-
-table#album audio {
-    margin: 0;
-    margin-top: 4px;
-    padding: 0;
-    max-height: 32px;
-    width: 85%;
-}
-
-table#album-layout {
-    width: 100%;
-    border-collapse: collapse;
-}

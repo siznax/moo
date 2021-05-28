@@ -1,11 +1,14 @@
-#tracklist-heading span {
-    margin-left: 8px;
-    margin-right: 8px;
+#tracklist {
+    margin: 8px;
+    padding: 8px;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow-y: scroll;
 }
 
-div#tracklist {
-    padding: 0 8px;
-    padding-bottom: 2em;
+table.tracklist {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .tracklist td {
@@ -13,8 +16,14 @@ div#tracklist {
     padding-bottom: 0;
 }
 
+.tracklist-artist {
+    font-weight: 100;
+    opacity: 0.5;
+}
+
 .tracklist-index, .tracklist-length {
     text-align: right;
+    opacity: 0.2;
 }
 
 .tracklist-title {

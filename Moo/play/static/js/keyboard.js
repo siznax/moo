@@ -1,3 +1,26 @@
+function keyDown(e) {
+
+    // alert(e.keyCode)
+
+    if (e.code == "ArrowUp") {
+        e.preventDefault()
+        gotoPrev() 
+    }
+    if (e.code == "ArrowRight") {
+        e.preventDefault()
+        gotoNext() 
+    }
+    if (e.code == "ArrowDown") {
+        e.preventDefault()
+        gotoNext() 
+    }
+    if (e.code == "ArrowLeft") {
+        e.preventDefault()
+        gotoPrev() 
+    }
+}
+
+
 function keyPressed(e) {
 
     // alert(e.code)
@@ -23,4 +46,5 @@ function keyPressed(e) {
 }
 
 
+document.addEventListener("keydown", keyDown)
 document.addEventListener("keypress", keyPressed)

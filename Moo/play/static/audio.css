@@ -1,0 +1,90 @@
+#album-info,
+#audio,
+#clock,
+#metadiv,
+#track-links,
+#track-summary {
+    margin: 8px;
+    padding: 8px;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 8px;
+}
+
+#album-audio {
+    position: absolute;
+    top: 0; left: 63%; width: 36%;
+}
+
+#album-year-genre {
+    font-weight: 100;
+}
+
+#audio audio {
+    margin-top: 8px;
+    max-height: 32px;
+    font-size: large;
+}
+
+#clock {
+    font-size: 18px;
+}
+
+#clock a, #clock span {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+#clock a:hover, #clock span:hover {
+    filter: none;
+    opacity: 1;
+}
+
+#clock a.emoji {
+    filter: grayscale(0.5);
+    opacity: 0.5;
+}
+
+#clock a.emoji:hover {
+    filter: none;
+    opacity: 1;
+}
+
+#track-album {
+    font-size: x-large;
+}
+
+#track-artist {
+    font-weight: 100;
+    text-transform: uppercase;
+}
+
+#track-controls {
+    font-family: monospace sans-serif;
+    font-size: 18px;
+}
+
+#track-controls #track-number {
+    margin-left: 8px;
+    margin-right: 10px;
+}
+
+#track-links img {
+    height: 24px;
+    margin-left: 8px;
+    margin-right: 8px;
+    filter: grayscale(1);
+    opacity: 0.4;
+}
+
+#track-links img:hover {
+    filter: none;
+    opacity: 1;
+}
+
+#track-summary span {
+    opacity: 0.6;
+}
+
+#track-title {
+    font-size: xx-large;
+}

@@ -1,0 +1,36 @@
+.search-album {
+    display: inline-block; 
+    width: 128px; 
+    height: 162px;
+    vertical-align: top; 
+    font-size: smaller;
+    overflow: hidden;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+#search-artists {
+    width: 67%;
+
+    margin: 16px;
+    margin-left: auto;
+    margin-right: auto;
+
+    border-radius: 4px;
+}
+
+#search-form {
+    margin: 16px;
+    padding: 8px;
+    background-color: thistle;
+    font-size: larger;
+}
+
+#search-form span {
+    margin-right: 16px;
+}
+
+#search-tracks {
+    margin: 8px;
+}

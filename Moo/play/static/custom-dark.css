@@ -47,7 +47,11 @@ body.dark a {
     color: rgb(135,135,135);
 }
 
-body.dark b, body.dark i {
+body.dark b {
+    color: yellow;
+}
+
+body.dark i {
     color: white;
 }
 
@@ -61,4 +65,8 @@ body.dark #audio-table {
 
 body.dark #track-title {
     text-shadow: 0px 0px 16px magenta;
+}
+
+body.dark div#album-audio div:first-child {
+    background-color: black;
 }

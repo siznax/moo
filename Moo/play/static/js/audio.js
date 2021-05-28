@@ -10,6 +10,18 @@ var smallBreakWidth = "640"
 var thinBreakHeight = "320"
 
 
+function Bright() {
+    let body = document.querySelector("body")
+    body.classList.remove("dark")
+}
+
+
+function Dark() {
+    let body = document.querySelector("body")
+    body.classList.add("dark")
+}
+
+
 function adjustLayout() {
     let coverDiv = document.getElementById('album-cover')
     let audioDiv = document.getElementById('album-audio')
@@ -27,19 +39,6 @@ function adjustLayout() {
         coverDiv.classList.remove('thin')
     }
 }
-
-
-function Bright() {
-    let body = document.querySelector("body")
-    body.classList.remove("dark")
-}
-
-
-function Dark() {
-    let body = document.querySelector("body")
-    body.classList.add("dark")
-}
-
 
 
 function gotoNext() {
@@ -81,51 +80,32 @@ function gotoTrack(num) {
     }
 }
 
+
 function hide(id) {
     elm = document.getElementById(id)
     elm.style.display = "none"
     elm.style.visibility = "hidden"
 }
 
-function init(version) {
-    document.addEventListener("keydown", keyDown)
-    document.addEventListener("keypress", keyPressed)
 
+function init(version) {
     if (audio) {
         adjustLayout()
         audio.addEventListener("ended", gotoNext)
-        // audio.focus({preventScroll:true})
     }
-
     window.onresize = adjustLayout
-
     console.log('Moo ' + version)
 }
 
-function keyDown(e) {
 
-    // alert(e.keyCode)
-
-    if (e.code == "ArrowUp") {
-        e.preventDefault()
-        gotoPrev() 
+function playOrPause() {
+    if (audio) {
+        if (audio.paused) {
+            audio.play()
+        } else {
+            audio.pause()
+        }
     }
-    if (e.code == "ArrowRight") {
-        e.preventDefault()
-        gotoNext() 
-    }
-    if (e.code == "ArrowDown") {
-        e.preventDefault()
-        gotoNext() 
-    }
-    if (e.code == "ArrowLeft") {
-        e.preventDefault()
-        gotoPrev() 
-    }
-}
-
-function keyPressed(e) {
-   if (e.code == "KeyR") { gotoRandom() }
 }
 
 
@@ -134,9 +114,16 @@ function playRandomTrack() {
 }
 
 
+function show(id) {
+    elm = document.getElementById(id)
+    elm.style.display = "block"
+    elm.style.visibility = "visible"
+}
+
+
 function toggle(id) {
 
-    /* assumes element is initially visible */
+    // assumes element is initially visible
 
     event.preventDefault()
 
@@ -163,7 +150,7 @@ function toggle(id) {
 
 function toggle_hidden(id) {
 
-    /* assumes element is initially hidden */
+    // assumes element is initially hidden
 
     event.preventDefault()
 
@@ -188,10 +175,4 @@ function toggle_hidden(id) {
         elm.style.display = "none"
     }
 
-}
-
-function show(id) {
-    elm = document.getElementById(id)
-    elm.style.display = "block"
-    elm.style.visibility = "visible"
 }

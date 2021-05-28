@@ -1,0 +1,38 @@
+#alpha-buttons {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#alpha-buttons a, #alpha-buttons b {
+    margin-right: 8px;
+}
+
+#config-buttons {
+    display: inline-block;
+    margin: 8px;
+    max-width: 75%
+}
+
+#config-buttons a.button {
+    font-size: smaller;
+    color: black;
+}
+
+#facet-buttons {
+    margin-bottom: 8px;
+}
+
+#facet-buttons a {
+    color: inherit;
+}
+
+#artist-buttons a {
+    background-color: palegreen;
+}
+
+#genre-buttons a {
+    background-color: pink;
+}
+
+#station-buttons a {
+}
