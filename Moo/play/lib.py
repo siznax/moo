@@ -5,18 +5,15 @@ Methods supporting Moo.play
 import logging
 import os
 import random
-import time
 
-from collections import Counter, OrderedDict
+from collections import Counter
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import quote
 
 import mutagen
 
 from flask import send_file
 
-from .tags import mp3_fields, mp4_fields
 from .utils import hours_minutes
 
 
@@ -53,18 +50,6 @@ MEDIATYPES = {
     "OGG": "audio/ogg",
     "WAV": "audio/wav",
 }
-
-
-logging.basicConfig(level=logging.INFO)
-
-
-def album(key, index):
-    '''
-    returns album from index matching key
-    '''
-    for path in index:
-        if str(path).endswith(key):
-            return str(path)
 
 
 def album_info(track, metadata):
@@ -105,65 +90,6 @@ def album_info(track, metadata):
     return out
 
 
-def albums(base, index):
-    '''
-    returns dict of minimal album metadata
-    '''
-    logging.info("Getting ALBUMS %s" % time.strftime('%X'))
-
-    out = dict()
-
-    for path in index:
-        pobj = Path(path)
-
-        meta = metadata(base, pobj, single=True)
-
-        if not meta.get('album'):
-            continue  # index, albums diverge
-
-        artist = meta.get('album_artist') or meta.get('artist')
-        year = meta['year'][:4] if meta.get('year') else 'None'
-
-        pruned = {
-            'album': meta.get('album'),
-            'artist': artist.split(';')[0] if artist else 'None',
-            'genre': meta.get('genre') or 'None',
-            'mtime': meta.get('mtime', 0),
-            'year': year}
-
-        out[path] = pruned
-
-    logging.info(f"ALBUMS DONE {time.strftime('%X')}")
-
-    return out
-
-
-def alpha(albums, mtag='artist'):
-    '''
-    returns a map of letters and counts from selected mtag
-    '''
-    letters = Counter()
-
-    for path in albums:
-        alb = albums[path]
-        art = alb.get(mtag)
-        if art:
-            letters[art[0].upper()] += 1
-
-    return dict(letters)
-
-
-def base(config):
-    '''
-    returns BASE directory from BASEFILE
-    '''
-    if not os.path.exists(config['BASEFILE']):
-        return
-
-    with open(config['BASEFILE']) as _:
-        return _.read().strip()
-
-
 def base_link(base):
     '''
     makes symbolic link to BASE in Moo/play/static
@@ -174,7 +100,7 @@ def base_link(base):
         raise ValueError(f"BASE not found: {base}")
 
     logging.info('Linking BASE to static/Moo')
-    logging.info(f"> os.symlink({base}, {dst})")
+    logging.info('> os.symlink(%s, %s)', base, dst)
 
     if os.path.exists(dst):
         if not os.path.islink(dst):
@@ -238,6 +164,8 @@ def cover(fpath, tpath=None):
     '''
     returns audio file APIC (album cover) data as HTTP response
     '''
+    logging.info('lib.cover fpath = %s', fpath)
+
     apic = get_apic(fpath, tpath)
 
     try:
@@ -253,56 +181,6 @@ def cover(fpath, tpath=None):
         mimetype=mtype)
 
 
-def flat_data(mfile):
-    '''
-    returns flattened dict from audio file metadata
-    '''
-    enc = type(mfile).__name__
-    tags = dict(mfile.tags)
-    flat = dict()
-
-    for item in tags:
-        if isinstance(tags[item], list):
-            if isinstance(tags[item][0], list):
-                flat[item] = ", ".join(tags[item][0])
-            else:
-                flat[item] = tags[item][0]
-
-    if enc == 'MP3':
-        flat = rekey_mp3_tags(flat or tags)
-
-    if enc == 'MP4':
-        flat = rekey_mp4_tags(flat or tags)
-
-    flat = rekey_catchall(flat)
-
-    if 'track' in flat:
-        flat['track'] = flat_val(flat, 'track')
-
-    if 'disc' in flat:
-        flat['disc'] = flat_val(flat, 'disc')
-
-    return flat
-
-
-def flat_val(data, key):
-    '''
-    returns flattened value from metadata
-    '''
-    obj = data[key]
-
-    if isinstance(obj, tuple):
-        return int(obj[0])
-
-    if isinstance(obj, str):
-        try:
-            return int(obj)
-        except ValueError:
-            if '/' in obj:
-                return obj.split('/')[0]
-            return obj
-
-
 def get_apic(fpath, tpath=None):
     '''
     returns track image if tpath, else first attached picture
@@ -311,13 +189,18 @@ def get_apic(fpath, tpath=None):
     def img(track_path):
         try:
             meta = mutagen.File(track_path)
-            for tag in meta.tags:
+
+            for tag in dict(meta):
                 if tag.startswith('APIC') or tag.startswith('covr'):
                     return meta[tag]
+
         except AttributeError:
-            pass  # not a media file
+            return None  # not a media file
+
         except (mutagen.id3.ID3NoHeaderError, mutagen.MutagenError):
-            pass  # no ID3 headers
+            return None  # no ID3 headers
+
+        return None
 
     if tpath:
         track_img = img(tpath)
@@ -328,6 +211,19 @@ def get_apic(fpath, tpath=None):
         track_img = img(str(track))
         if track_img:
             return track_img
+
+    return None
+
+
+def get_base(config):
+    '''
+    returns BASE directory from BASEFILE
+    '''
+    if not os.path.exists(config['BASEFILE']):
+        return None
+
+    with open(config['BASEFILE']) as _:
+        return _.read().strip()
 
 
 def get_history(base, filepath):
@@ -345,44 +241,6 @@ def get_history(base, filepath):
         return out
 
 
-def index(base, sort=None):
-    '''
-    returns list of paths that do not contain directories,
-    reverse-sorted by mtime (default), atime, or ctime
-    '''
-    logging.info(f"Computing INDEX {time.strftime('%X')}")
-
-    albums = list()  # paths that do not contain directories
-    sort_key = os.path.getmtime
-
-    if sort:
-        if sort == 'atime':
-            sort_key = os.path.getatime
-        if sort == 'ctime':
-            sort_key = os.path.getctime
-
-    for path in Path(base).rglob('*'):
-        leaf = True
-
-        try:
-            for child in path.iterdir():
-                if child.is_dir():
-                    leaf = False
-                    continue
-        except NotADirectoryError:
-            continue
-
-        if not [x for x in os.listdir(str(path)) if not x.startswith('.')]:
-            continue
-
-        if leaf:
-            albums.append(str(path))
-
-    logging.info(f"INDEX Done {time.strftime('%X')}")
-
-    return sorted(albums, key=sort_key, reverse=True)
-
-
 def mediatype(enc):
     '''
     returns mediatype given encoding
@@ -391,85 +249,7 @@ def mediatype(enc):
         if enc.upper().startswith(mtype):
             return MEDIATYPES[mtype]
 
-
-def metadata(base, album, single=False):
-    '''
-    returns metadata for an entire album from the album path,
-    or for a single track if single is True
-    '''
-    out = dict()
-
-    for ind, fpath in enumerate(sorted(Path(album).iterdir())):
-        key = str(fpath)
-        audio = mutagen.File(fpath)
-        encoding = type(audio).__name__
-        data = dict()
-
-        if not audio or not hasattr(audio, 'tags'):
-            continue
-
-        try:
-            data = flat_data(audio)
-            data.update(vars(audio.info))
-            data['type'] = audio.mime[0]
-        except AttributeError:
-            raise
-
-        data['encoding'] = encoding
-        data['src'] = quote(key.replace(base, '/static/Moo'))
-
-        if 'title' not in data:
-            name, _ = os.path.splitext(fpath.name)
-            data['title'] = name
-
-        if 'track' not in data:
-            data['track'] = ind + 1
-
-        data.update(stat(str(fpath)))
-
-        data['uri'] = fpath.as_uri()
-
-        out[key] = data
-
-        if single is True and data:
-            return data
-
-    out = parse_fnames(out)
-
-    return sorted_tracks(out)
-
-
-def parse_fnames(mdata):
-    updated = False
-    words = Counter()
-    dashes = Counter()
-
-    for item in mdata:
-        if 'title' in mdata[item]:
-            continue
-
-        path = Path(mdata[item]['fpath'])
-
-        pwords = path.name.split()
-        pdash = path.name.split('-')
-
-        tmp = dict()
-        tmp['title'] = path.name
-
-        words.update(pwords)
-        dashes.update(pdash)
-
-        mdata[item].update(tmp)
-        updated = True
-
-    if not updated:
-        return mdata
-
-    for item in mdata:
-        mdata[item]['_words'] = dict(words)
-        mdata[item]['_dashes'] = dict(dashes)
-
-    return mdata
+    return None
 
 
 def personnel(metadata):
@@ -571,131 +351,6 @@ def prefixed(titles):
     return out
 
 
-def rekey_catchall(tags):
-    fields = {
-        'discnumber': 'disc',
-        'tracknumber': 'track',
-    }
-
-    _ = dict()
-
-    for item in tags:
-        if item in fields:
-            key = fields[item]
-        else:
-            key = item
-        _[key] = tags[item]
-
-    return _
-
-
-def rekey_mp3_tags(tags):
-    '''
-    normalize MP3 tags to ID3
-    '''
-    def get_val(obj):
-        if hasattr(obj, 'text'):
-            text = obj.text
-            if isinstance(text, list):
-                return ", ".join([str(x) for x in text])
-            else:
-                return str(text)
-        else:
-            return str(obj)
-
-    _ = dict()
-
-    for item in tags:
-        if item.startswith('APIC'):
-            _['APIC'] = tags[item].mime
-            continue
-        if 'MusicBrainz' in item:
-            _['MBID'] = tags[item]
-            continue
-        if 'purl' in item:
-            _['URL'] = tags[item]
-            continue
-        for field in mp3_fields:
-            if item.startswith(field):
-                _[mp3_fields[field]] = get_val(tags[item])
-
-    return _
-
-
-def rekey_mp4_tags(tags):
-    '''
-    normalize MP4 tags to ID3
-    '''
-    _ = dict()
-
-    for item in tags:
-        if item in mp4_fields:
-            _[mp4_fields[item]] = tags[item]
-
-    return _
-
-
-def sorted_tracks(meta):
-    '''
-    returns album metadata as dict with keys sorted by disc and then
-    track number
-    '''
-    discs = list()
-    ntracks = len(meta)
-    out = dict()
-    zeroes = 2 if ntracks < 100 else 3
-    numbers = list(range(1, ntracks + 1))
-
-    for track in meta:
-        if 'disc' in meta[track]:
-            discs.append(meta[track]['disc'])
-
-    discs = list(set(discs))
-
-    for track in sorted(meta):
-        if 'track' in meta[track]:
-            tnum = meta[track]['track']
-            try:
-                numbers.remove(int(tnum))
-            except ValueError:
-                tnum = numbers.pop(0)
-        else:
-            tnum = numbers.pop(0)
-
-        if isinstance(tnum, int):
-            tnum = str(tnum)
-        else:
-            tnum = tnum.split('/')[0].zfill(zeroes)
-
-        if 'disc' in meta[track] and len(discs) > 1:
-            dnum = str(meta[track]['disc']).zfill(zeroes)
-            key = '{}.{}'.format(dnum, tnum.zfill(zeroes))
-        else:
-            key = tnum.zfill(zeroes)
-
-        # print('ind = {}, tnum = {} {}'.format(ind, tnum, numbers))
-
-        out[key] = meta[track]
-        out[key]['_key'] = key
-
-    if len(out) != ntracks:
-        raise ValueError("Problem sorting tracks {} != {}".format(
-            len(out), ntracks))
-
-    return out
-
-
-def stat(fpath):
-    '''returns file stat data as dict'''
-    stat = os.stat(fpath)
-
-    return {
-        'fpath': fpath,
-        'atime': stat.st_atime,
-        'mtime': stat.st_mtime,
-        'size': stat.st_size}
-
-
 def tags(base, alkey, track_fname):
     '''
     returns all ID3 tags for a single track from album path as dict
@@ -705,40 +360,16 @@ def tags(base, alkey, track_fname):
             audio = mutagen.File(str(fname))
 
             try:
-                tags = dict(audio.tags)
+                _tags = dict(audio.tags)
             except TypeError:
                 return None
 
             for item in audio.tags:
                 if str(item).upper().startswith('APIC'):
-                    tags[item] = audio.tags[item].mime
+                    _tags[item] = audio.tags[item].mime
                 elif str(item).upper().startswith('COVR'):
-                    tags[item] = vars(audio.tags[item][0])
+                    _tags[item] = vars(audio.tags[item][0])
 
-            return tags
+            return _tags
 
-
-def top_counts(counts, num=12):
-    '''
-    returns top <num> counts as list of tuples from dict of counts
-    limited by maxcount
-    '''
-    tmp = list()
-    top = OrderedDict()
-
-    for item in counts:
-        tmp.append((counts[item], item))
-
-    for item in sorted(tmp, reverse=True):
-        top[item[1]] = item[0]
-        if len(top) >= num:
-            break
-
-    return top
-
-
-def tracks(fpath):
-    '''
-    returns a list of tracks from a filepath
-    '''
-    return [str(x) for x in Path(fpath).iterdir() if x.is_file()]
+    return None

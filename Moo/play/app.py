@@ -26,81 +26,83 @@ from urllib.parse import quote, unquote
 from flask import Flask, render_template, request, abort, jsonify, redirect
 from flask_executor import Executor
 
-from Moo.play import config, lib, search, utils
+from Moo.play import config, lib, utils, MooAlbums, MooSearch
 
 
 app = Flask(__name__)
+
 app.config.from_object(config)
 app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
+app.config['BASE'] = lib.get_base(app.config)
 
+moo = MooAlbums(app.config)
+search = MooSearch(app.config)
 executor = Executor(app)
 
-base = lib.base(app.config)
-
-if base:
-    index = lib.index(base)
-    albums = lib.albums(base, index)
-    alpha = lib.alpha(albums)
+logging.basicConfig(level=logging.INFO)
 
 
 @app.before_request
-def get_base():
-    if 'BASE' not in app.config:
-        app.config['BASE'] = lib.base(app.config)
+def before_request():
+    '''ensure BASE before every request'''
+    if request.method == 'GET' and not app.config.get('BASE'):
+        return render_template('base-admin.html')
+
+    return None
 
 
 @app.errorhandler(404)
-def page_not_found():
+def handle_404(err):
+    '''render custom 404'''
     return render_template('404.html', emoji=lib.EMOJI), 404
 
 
 @app.route('/')
 def root():
-    if not app.config['BASE']:
-        return render_template('base-admin.html')
+    '''
+    render application root
+    '''
+    salbums = moo.sorted_albums('year', reverse=True)
 
-    try:
-        _albums = sorted_albums('year', albums, reverse=True)
-        return serve_album(str(index[0]), index, _albums)
-    except NameError:
-        return 'RESTART required'
+    return serve_album(str(moo.index[0]), moo.index, salbums)
 
 
 @app.route('/admin')
 def admin():
-    sindex = search.load_search(app.config['SINDEX'])
-
+    '''render admin interface'''
     ages = {
-        'new': utils.file_age(str(index[0])),
+        'new': utils.file_age(str(moo.index[0])),
         'search': utils.file_age(app.config['SINDEX']),
     }
 
     updated = None
+
     if os.path.exists(app.config['SINDEX']):
         mtime = os.path.getmtime(app.config['SINDEX'])
         updated = datetime.datetime.fromtimestamp(mtime)
 
     return render_template(
         'admin.html',
-        albums=albums,
+        albums=moo.albums,
         ages=ages,
-        base=base,
+        base=moo.base,
         config=app.config,
         emoji=lib.EMOJI,
-        sindex=sindex,
+        sindex=search.index,
         tasks=executor.futures._state('build_search'),
         updated=updated)
 
 
 @app.route('/album/<path:alkey>')
 def album_route(alkey):
+    '''render album'''
+    alkey = '/'.join([app.config['BASE'], alkey])
+
     try:
-        base = app.config['BASE']
-        alkey = '/'.join([base, alkey])
+        alb = moo.subset('artist', moo.albums[alkey]['artist'])
+        ind = list(alb.keys())
 
-        _index, _albums = subset('artist', albums[alkey]['artist'])
-
-        return serve_album(alkey, _index, _albums)
+        return serve_album(alkey, ind, alb)
 
     except (FileNotFoundError, KeyError):
         abort(404, 'No albums with alkey: {}'.format(alkey))
@@ -108,31 +110,34 @@ def album_route(alkey):
 
 @app.route('/alpha/<letter>')
 def alpha_route(letter):
-    _index = list()
+    '''render albums with artist starting with letter'''
 
-    for path in albums:
-        art = albums[path].get('artist')
-        if art and art[0] == letter:
-            _index.append((letter, path))
+    # get subset of albums with artists starting with letter
+    tmp = dict()
+    for path in moo.albums:
+        artist = moo.albums[path].get('artist')
+        if artist and artist.startswith(letter):
+            tmp[path] = moo.albums[path]
 
-    _index = [x[1] for x in _index]
+    # now sort subset on some key (artist)
+    alb = moo.sort_subset(tmp, 'artist')
+    ind = list(alb.keys())
 
     try:
-        _albums = lib.albums(_index[0], _index)
-        return serve_album(
-            _index[0], _index, sorted_albums('artist', _albums))
+        return serve_album(ind[0], ind, alb)
+
     except IndexError:
         abort(404, 'No albums matching: {}'.format(letter))
 
 
 @app.route('/artist/<path:artist>')
 def artist_route(artist):
+    '''render albums by specified artist'''
     try:
-        _index, _albums = subset('artist', artist)
+        alb = moo.subset('artist', artist, 'year', True)
+        ind = list(alb.keys())
 
-        salbums = sorted_albums('year', _albums, reverse=True)
-
-        return serve_album(str(_index[0]), _index, salbums)
+        return serve_album(ind[0], ind, alb)
 
     except (IndexError, KeyError):
         abort(404, 'No albums with artist: {}'.format(artist))
@@ -140,16 +145,18 @@ def artist_route(artist):
 
 @app.route('/base')
 def base_route():
+    '''render the list of albums found'''
     return render_template(
         'base.html',
-        albums=albums,
+        albums=moo.albums,
         base=app.config['BASE'],
         emoji=lib.EMOJI,
-        index=index)
+        index=moo.index)
 
 
 @app.route('/base-admin', methods=['POST'])
 def base_admin():
+    '''render the BASE admin interface'''
     base_input = request.form.get('base')
 
     if not os.path.exists(base_input):
@@ -160,88 +167,111 @@ def base_admin():
     lib.base_write(base_input)
     lib.base_link(base_input)
 
+    # compute index with BASE
+    moo.base = base_input
+    moo.index = moo.albums_index()
+    moo.albums = moo.albums_data()
+
     return redirect('/')
 
 
 @app.route('/build-search')
 def build_route():
-    return jsonify(build_search(index, app.config['SINDEX']))
+    '''render JSON output from launching search build'''
+    return jsonify(build_search(moo.index))
 
 
 @app.route('/format/<path:encoding>')
 def format_route(encoding):
+    '''render albums with specified encoding'''
     try:
-        _index, _albums = subset('encoding', encoding)
-        salbums = sorted_albums('year', _albums, reverse=True)
-        return serve_album(str(_index[0]), _index, salbums)
+        alb = moo.subset('encoding', encoding, 'year', True)
+        ind = list(alb.keys())
+
+        return serve_album(ind[0], ind, alb)
+
     except IndexError:
         abort(404, 'No albums with encoding: {}'.format(encoding))
 
 
 @app.route('/genre/<path:label>')
 def genre_label(label):
+    '''render albums with specified genre'''
     try:
-        _index, _albums = subset('genre', label)
-        salbums = sorted_albums('year', _albums, reverse=True)
-        return serve_album(str(_index[0]), _index, salbums)
+        alb = moo.subset('genre', label, 'year', True)
+        ind = list(alb.keys())
+
+        return serve_album(ind[0], ind, alb)
+
     except IndexError:
         abort(404, 'No albums with genre: {}'.format(label))
 
 
 @app.route('/history')
 def history():
-    _ind = list()
+    '''render albums in HISTORY'''
     base = app.config['BASE']
+    ind = list()
+    alb = OrderedDict()
 
     for entry in lib.get_history(base, app.config['HISTORY']):
-        _ind.append(os.path.join(base, entry[1:]))
+        ind.append(os.path.join(base, entry[1:]))
 
-    _ind.reverse()
+    ind.reverse()
 
-    _alb = lib.albums(base, _ind)
+    for path in ind:
+        if moo.albums.get(path):
+            alb[path] = moo.albums[path]
 
-    return serve_album(_ind[0], _ind, _alb)
+    return serve_album(ind[0], ind, alb)
 
 
 @app.route('/img/<path:alkey>')
 def img_alkey(alkey):
+    '''
+    send HTTP response with album image data
+    '''
+    path = os.path.join(app.config['BASE'], alkey)
+
     try:
-        return lib.cover(os.path.join(app.config['BASE'], alkey))
+        path = os.path.join(app.config['BASE'], alkey)
+        return lib.cover(unquote(path))
     except TypeError:
         return app.send_static_file('ico/cover.png')
 
 
-@app.route('/img/track/<tnum>/<path:alkey>')
-def img_track(tnum, alkey):
-    try:
-        _, metadata = album_data(alkey, index)
-        mkey = sorted(metadata.keys())[int(tnum) - 1]
-        tpath = metadata[mkey]['fpath']
-        return lib.cover(os.path.join(base, alkey), tpath)
-    except TypeError:
-        return app.send_static_file('cover.png')
+# @app.route('/img/<tnum>/<path:alkey>')
+# def img_track(tnum, alkey):
+#     '''send HTTP response with track image data'''
+#     try:
+#         _, metadata = album_data(alkey)
+#         mkey = sorted(metadata.keys())[int(tnum) - 1]
+#         tpath = metadata[mkey]['fpath']
+#         return lib.cover(os.path.join(app.config['BASE'], alkey), tpath)
+#     except TypeError:
+#         return app.send_static_file('cover.png')
 
 
 @app.route('/None')
 def none():
-    _albums = dict()
-    _index = list()
+    '''render albums with None in a major metadata field'''
+    tmp = dict()
 
     try:
-        for path in albums:
-            art = albums[path].get('artist')
-            enc = albums[path].get('encoding')
-            gen = albums[path].get('genre')
-            yar = albums[path].get('year')
+        for path in moo.albums:
+            art = moo.albums[path].get('artist')
+            enc = moo.albums[path].get('encoding')
+            gen = moo.albums[path].get('genre')
+            yar = moo.albums[path].get('year')
 
-            if (art == 'None' or enc == 'None' or gen == 'None'
-                    or yar == 'None'):
-                _albums[path] = albums[path]
-                _index.append(path)
+            if 'None' in [art, enc, gen, yar]:
+                tmp[path] = moo.albums[path]
 
-        salbums = sorted_albums('mtime', _albums, reverse=True)
+        alb = moo.sort_subset(tmp, 'artist')
+        ind = list(alb.keys())
+        alk = ind[0]
 
-        return serve_album(str(_index[0]), _index, salbums)
+        return serve_album(alk, ind, alb)
 
     except IndexError:
         abort(404, 'No albums without metadata!')
@@ -249,18 +279,31 @@ def none():
 
 @app.route('/new')
 def new():
-    _ind = index[:100]
-    _alb = lib.albums(base, _ind)
-    return serve_album(str(_ind[0]), _ind, _alb)
+    '''render newly added albums'''
+    ind = moo.index[:100]
+    alb = dict()
+
+    for path in ind:
+        alb[path] = moo.albums.get(path)
+
+    return serve_album(str(ind[0]), ind, alb)
+
+
+@app.route('/play')
+def play():
+    '''
+    load all other /routes in an iframe for simultaneous play and browse
+    '''
+    return render_template("play.html")
 
 
 @app.route('/random')
 def rando():
-    ind = random.choice(range(len(index)))
-    alkey = str(index[ind])
+    '''render random album'''
+    alkey = str(moo.index[random.choice(range(len(moo.index)))])
 
     try:
-        return redirect('/album' + quote(alkey.replace(base, '')))
+        return redirect('/album' + quote(alkey.replace(moo.base, '')))
     except (TypeError, ValueError):
         redirect('/random')  # try again
 
@@ -268,13 +311,11 @@ def rando():
 @app.route('/search', defaults={'terms': None}, methods=['GET', 'POST'])
 @app.route('/search/<path:terms>', methods=['GET', 'POST'])
 def search_route(terms):
-
+    '''render search results'''
     if request.method == 'POST':
         terms = request.form.get('search-input')
 
-    sindex = search.load_search(app.config['SINDEX'])
-
-    albums, artists, tracks = search.find(base, sindex, terms)
+    albums, artists, tracks = search.find(terms)
 
     return render_template(
         'search-results.html',
@@ -282,32 +323,37 @@ def search_route(terms):
         artists=artists,
         tracks=tracks,
         emoji=lib.EMOJI,
-        sindex=sindex,
+        sindex=search.index,
         terms=terms)
 
 
 @app.route('/track/<tnum>/<path:alkey>')
-def track(tnum, alkey):
-    alkey = '/'.join([base, unquote(alkey)])
+def track_route(tnum, alkey):
+    '''render track'''
+    alkey = '/'.join([moo.base, unquote(alkey)])
 
     try:
-        g_index, g_albums = subset('genre', albums[alkey]['genre'])
-        return serve_album(alkey, g_index, g_albums, tnum)
-    except:
+        alb = moo.subset('genre', moo.albums[alkey]['genre'])
+        return serve_album(alkey, list(alb.keys()), alb, tnum)
+
+    except FileNotFoundError:
         abort(404)
 
 
 @app.route('/year/<path:year>')
 def year_route(year):
+    '''render albums for specified year'''
     try:
-        _index, _albums = subset('year', year)
+        sub = moo.subset('year', year)
 
         if year == 'None':
-            salbums = sorted_albums('mtime', _albums, reverse=True)
+            alb = moo.sort_subset(sub, 'mtime', True)
         else:
-            salbums = sorted_albums('artist', _albums)
+            alb = moo.sort_subset(sub, 'artist')
 
-        return serve_album(str(_index[0]), _index, salbums)
+        ind = list(alb.keys())
+
+        return serve_album(ind[0], ind, alb)
 
     except IndexError:
         abort(404, 'No albums with year: {}'.format(year))
@@ -318,9 +364,10 @@ def build(albindex):
     '''
     build search index from album index and write to outfile
     '''
-    logging.info(f"Started build job {time.strftime('%X')}")
+    logging.info("Started build job %s", time.strftime('%X'))
 
     outfile = app.config['SINDEX']
+
     start = time.time()
     sindex = search.search_index(albindex)
     seconds = int(time.time() - start)
@@ -330,36 +377,23 @@ def build(albindex):
         'output': outfile,
         'seconds': seconds}
 
-    logging.info('>> Moodex {}'.format(out))
+    logging.info('>> Moodex %s', out)
 
     data = out
     data['results'] = sindex
 
+    search.index = data
+
     with open(outfile, 'w') as _:
         _.write(json.dumps(data))
-        logging.info(f"Wrote {_.tell()} bytes to {outfile}")
+        logging.info('Wrote %d bytes to %s', _.tell(), outfile)
 
-    logging.info(f"Finished build job {time.strftime('%X')}")
+    logging.info('Finished build job %s', time.strftime('%X'))
 
     return out
 
 
 ################################################################
-
-
-def album_data(alkey, index):
-    '''
-    returns album, metadata tuple or aborts
-    '''
-    alb = lib.album(alkey, index)
-
-    if not alb:
-        abort(404)
-
-    try:
-        return alb, lib.metadata(app.config['BASE'], alb)
-    except FileNotFoundError:
-        abort(404)
 
 
 def build_search(index):
@@ -373,7 +407,7 @@ def build_search(index):
 
     build.submit_stored('build_search', index)
 
-    return f"Submitted build_search task {time.strftime('%X')}"
+    return 'Submitted build_search task %s' % time.strftime('%X')
 
 
 def build_search_result():
@@ -393,7 +427,7 @@ def serve_album(alkey, index, albums, track_num=1):
     serve album and selected (or first) track and (all) or part of the
     <index> and <albums>
     '''
-    album, data = album_data(alkey, index)
+    album, data = album_data(alkey)
 
     if data:
         tind = int(track_num) - 1
@@ -422,7 +456,7 @@ def serve_album(alkey, index, albums, track_num=1):
         'index.html',
         albums=albums,
         album=album,
-        alpha=alpha,
+        alpha=moo.alpha,
         alkey=alkey.replace(app.config['BASE'], ''),
         base=app.config['BASE'],
         config=app.config,
@@ -436,51 +470,6 @@ def serve_album(alkey, index, albums, track_num=1):
         prefixed=None,  # lib.prefixed(titles),
         total=len(index),
         track=track)
-
-
-def sorted_albums(sort_key, albums, reverse=False):
-    '''
-    return albums sorted by sort_key (as OrderedDict)
-    '''
-    tmp = list()
-    nones = list()
-    out = OrderedDict()
-
-    for item in albums:
-        facet = albums[item].get(sort_key)
-        data = albums[item]
-
-        if facet == 'None':
-            nones.append((facet, item, data))
-        else:
-            tmp.append((facet, item, data))
-
-    for tup in sorted(tmp, reverse=reverse):
-        out[tup[1]] = tup[2]
-
-    for tup in nones:
-        out[tup[1]] = tup[2]
-
-    return out
-
-
-def subset(facet, value):
-    '''
-    returns index and albums reduced by metadata <facet> containing <value>
-    '''
-    base = app.config['BASE']
-
-    sub = list()
-    for alb in albums:
-
-        if value == 'None' and not albums[alb][facet]:
-            sub.append(alb)
-            continue
-
-        if value.lower() in albums[alb][facet].lower():
-            sub.append(alb)
-
-    return sub, lib.albums(base, sub)
 
 
 def write_history(alkey, maxlen=1000):
@@ -506,3 +495,16 @@ def write_history(alkey, maxlen=1000):
     with open('HISTORY', 'w') as _:
         for key in tmp:
             _.write(key + "\n")
+
+
+def album_data(path):
+    '''
+    return (alkey, metadata) tuple from album path
+    '''
+    if path not in moo.index:
+        abort(404)
+
+    try:
+        return path, moo.metadata(path)
+    except FileNotFoundError:
+        abort(404)
