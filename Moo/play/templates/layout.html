@@ -9,7 +9,7 @@
 
     <link 
        rel="shortcut icon" 
-       href="{{ url_for('static', filename='ico/moo.ico') }}">
+       href="{{ url_for('static', filename='favicon.ico') }}">
 
     <link rel="stylesheet" href="/static/style.css">
 
@@ -33,6 +33,14 @@
 
     {% if request.path.startswith('/find') %}
     <title>/find: {{ request.path.split('/')[-1] }}</title>
+    {% endif %}
+
+    {% if request.path == "/new" %}
+    <title>New albums</title>
+    {% endif %}
+
+    {% if request.path == "/history" %}
+    <title>moo History</title>
     {% endif %}
 
     {% if track %}
@@ -66,7 +74,7 @@
     <script src="/static/js/audio.js"></script>
     {% endif %}
 
-    {% if request.path.startswith('/album')
+     {% if request.path.startswith('/album')
        or request.path.startswith('/track') %}
     <script src="/static/js/clock.js"></script>
     <script src="/static/js/keyboard.js"></script>
