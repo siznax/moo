@@ -167,10 +167,12 @@ def base_admin():
     lib.base_write(base_input)
     lib.base_link(base_input)
 
-    # compute index with BASE
     moo.base = base_input
     moo.index = moo.albums_index()
     moo.albums = moo.albums_data()
+    moo.alpha = moo.albums_alpha()
+
+    search.base = base_input
 
     return redirect('/')
 
