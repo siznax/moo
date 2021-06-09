@@ -32,7 +32,7 @@
   {% for entry in albums %}
   <div class="search-album">
     <a href="/album{{ entry | urlencode }}">
-      <img width="128" height="128" src="/img{{ entry | urlencode }}"></a>
+      <img width="128" height="128" src="/img/{{ entry | urlencode }}"></a>
     <div>{{ albums[entry][1] }}</div>
   </div>
   {% endfor %}
@@ -61,7 +61,7 @@
     </tr>
     {% for entry in tracks | sort %}
     <tr>
-      <td><i>{{ entry[3] }}</i></td>
+      <td><i><a href="/track/{{ entry[4] }}{{ entry[0] | urlencode }}">{{ entry[3] }}</a></i></td>
       <td><a href="/album{{ entry[0] }}">{{ entry[1] }}</a></td>
       <td><a href="/artist/{{ entry[2] }}">{{ entry[2] }}</a></td>
     </tr>
