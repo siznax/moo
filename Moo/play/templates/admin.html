@@ -6,6 +6,30 @@
 
 <p><i>your music in your browser</i></p>
 
+<div id="base" class="admin-box">
+<h3>Base</h3>
+<table class="data">
+  <tr>
+    <td><b>BASE</b></td>
+    <td>{{ base }}</td>
+  </tr>
+  <tr>
+    <td><b>Albums</b></td>
+    <td>{{ "{:,}".format(albums | length) }} (from file system)</td>
+  </tr>
+  <tr>
+    <td><b>Tracks</b></td>
+    <td>{{ "{:,}".format(sindex.length) }} (from search build)</td>
+  </tr>
+</table>
+<p>
+  {{ emoji.run | safe }}
+  <span class="box">rebase</span>
+</p>
+</div>
+
+<br>
+
 {% include "search-admin.html" %}
 <br>
 
