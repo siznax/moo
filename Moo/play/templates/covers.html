@@ -1,19 +1,16 @@
-<link rel="stylesheet" type="text/css" href="/static/covers.css"></link>
+<link rel="stylesheet" type="text/css" href="/static/covers.css">
 
 <div id="covers" class="clr-3">
-
-  {% for path in albums %}
-
-  {% set album = albums[path] %}
-  {% set href = path | replace(base + '/', '') %}
-
+  {%- for path in albums -%}
+  {%- set album = albums[path] -%}
+  {%- set href = path | replace(base + '/', '') -%}
   <div class="album-card">
-    
+
     <div>
       <a href="/album/{{ href | urlencode }}"
-         title="{{ alb }}">
-        <img src="/img/{{ href | urlencode }}"
-             decoding="sync" loading="lazy"></a>
+         title="{{ alb }}"
+         ><img decoding="sync" loading="lazy"
+               src="/img/{{ href | urlencode }}"></a>
     </div>
 
     <div class="clr-c">
@@ -21,8 +18,7 @@
     </div>
 
     <div style="white-space: nowrap">
-      <a href="/artist/{{ album.artist }}">
-        {{ album.artist }}</a>
+      <a href="/artist/{{ album.artist }}">{{ album.artist }}</a>
     </div>
 
     <div>
@@ -32,7 +28,5 @@
     </div>
 
   </div>
-
-  {% endfor %}
-
+  {%- endfor -%}
 </div>
