@@ -230,6 +230,9 @@ def get_history(base, filepath):
     '''
     returns list of recently played albums with valid paths
     '''
+    if not os.path.exists(filepath):
+        return list()
+
     out = list()
 
     with open(filepath) as _:
