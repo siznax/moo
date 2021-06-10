@@ -8,12 +8,21 @@
     all: unset;
     display: inline-block;
     width: 100%;
-    margin-bottom: -4px;
 }
 
-#album-cover.thin, #album-cover.thin img {
+#album-audio.small {
     all: unset;
-    height: 100%;
-    aspect-ratio: 1/1;
+    display: inline-block;
 }
 
+#album-audio.small #audio {
+    position: sticky;
+    top: 0px;
+    z-index: 9;
+    background-color: white;
+}
+
+#album-audio.small #track-title {
+    font-size: 24px;
+    font-weight: bold;
+}
