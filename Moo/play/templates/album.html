@@ -1,14 +1,11 @@
-<!-- Layout control by album.css, layout.js -->
-
 <link rel="stylesheet" href="/static/album.css">
 
 <div id="album-cover">
   <img
      alt="album cover"
      onclick="playOrPause()"
-     src="/img{{ slash }}{{ alkey | urlencode }}"
-     style="width: 100%; aspect-ratio: 1/1;">
-</div>
+     src="/img/{{ alkey | urlencode }}"
+     style="width: 100%; aspect-ratio: 1/1;"></div>
 
 <div id="album-audio">
   {% include "clock.html" %}
