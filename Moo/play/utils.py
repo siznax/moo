@@ -4,9 +4,8 @@ Moo Utilities
 '''
 
 import os
+import math
 import time
-
-from math import floor, ceil
 
 
 def file_age(filepath):
@@ -23,7 +22,7 @@ def hours_minutes(seconds, colons=False):
     hour = 60 * minute
 
     if seconds >= hour:
-        hours = floor(seconds / hour)
+        hours = math.floor(seconds / hour)
         seconds = seconds % hour
         if colons:
             out.append(str(hours).zfill(2))
@@ -31,7 +30,7 @@ def hours_minutes(seconds, colons=False):
             out.append('{}h'.format(hours))
 
     if seconds >= minute:
-        minutes = ceil(seconds / minute)
+        minutes = math.ceil(seconds / minute)
         if colons:
             out.append(str(minutes).zfill(2))
         else:
