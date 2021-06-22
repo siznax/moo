@@ -18,12 +18,13 @@ from .utils import hours_minutes
 
 
 EMOJI = {  # CLDR emoji names
-    'admin': "\u2699\uFE0F",  # "\N{Gear}",
-    'app': "\N{saxophone}",
+    'admin': "\N{Roller Skate}",
+    'app': "\N{Saxophone}",
     'base': '&#x1F3B5;',
+    'cursor': '&#x27A1;&#xFE0F;',
     'fleuron': '&#x2766;',
-    'heart': "\N{black heart suit}",
-    'hearted': "\N{anatomical heart}",
+    'discover': '&#x1F30B;',
+    'heart': "\N{anatomical heart}",
     'help': '&#x2754;',
     'history': '&#x1F3B6;',
     'more': '&#x1F52E;',
@@ -31,13 +32,17 @@ EMOJI = {  # CLDR emoji names
     'new': '&#x1F195;',
     'none': '&#x1F6AB;',
     'notfound': '&#x1F62D;',
+    'playlist': '&#x1F3AF;',
     'prev': "\N{Black Left-Pointing Double Triangle with Vertical Bar}",
     'random': '&#x1F3B2;',
+    'repeat': '&#x1F501;',
     'run': '&#x1F6FC;',
     'search': '&#x1F50D;',
     'shades': '&#x1F576;',
+    'shuffle': "\N{Twisted Rightwards Arrows}",
     'star': '&#x2606;',
     'starred': '&#x2B50;',
+    'warning': "&#x26A0;&#xFE0F;",
 }
 
 # https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_codecs
