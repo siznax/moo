@@ -15,7 +15,15 @@
 
 {% include "header.html" %}
 
+{% if request.path.startswith('/discover') %}
+
+{% include "discover.html" %}
+
+{% else %}
+
 {% include "covers.html" %}
+
+{% endif %}
 
 {% include "footer.html" %}
 
