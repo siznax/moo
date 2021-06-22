@@ -1,0 +1,97 @@
+#playlist-buttons {
+    max-width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 8px;
+}
+
+#playlist-audio-track img {
+    vertical-align: middle;
+    border-radius: 4px;
+}
+
+#playlist-list {
+    display: inline-block;
+
+    max-width: 85%;
+    max-height: 45vh;
+
+    overflow-x: scroll;
+
+    margin-left: auto;
+    margin-right: auto;
+    padding: 16px;
+
+    background-color: rgba(0,0,0,0.06);
+    border-radius: 8px;
+}
+
+#playlist-source {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: rgba(0,0,0,0.06);
+}
+
+table#playlist-audio-table {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+table#playlist-audio-table td {
+    vertical-align: middle;
+    padding: 4px;
+}
+
+table#playlist-list-table td {
+    padding: 2px 4px;
+}
+
+table#playlist-source-table td {
+    padding: 4px 6px;
+}
+
+tr#playlist-audio-track td {
+    padding: 4px 8px;
+}
+
+
+#playlist-audio-controls {
+    padding: 8px;
+    padding-left: 12px;
+    display: inline-block;
+    font-size: 18px;
+    background-color: rgba(0,0,0,0.06);
+    border-radius: 8px;
+}
+
+.listing {
+    display: inline-block;
+    max-height: 55vh;
+    max-width: 80%;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: 16px;
+
+    background-color: rgba(0,0,0,0.06);
+    border-radius: 8px;
+
+    overflow-x: scroll;
+}
+
+.listing-dialog {
+    margin: 16px;
+}
+
+.listing-dialog form {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.listing-table td {
+    padding: 0px 4px;
+}

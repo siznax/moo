@@ -26,7 +26,8 @@ from urllib.parse import quote, unquote
 from flask import Flask, render_template, request, abort, jsonify, redirect
 from flask_executor import Executor
 
-from Moo.play import config, lib, utils, MooAlbums, MooSearch
+from Moo.play import config, lib, utils
+from Moo.play import MooAlbums, MooPlaylists, MooSearch
 
 
 app = Flask(__name__)
@@ -38,6 +39,7 @@ app.config['BASE'] = lib.get_base(app.config)
 moo = MooAlbums(app.config)
 search = MooSearch(app.config)
 executor = Executor(app)
+playlists = MooPlaylists(app.config['PLAYLISTS'])
 
 logging.basicConfig(level=logging.INFO)
 
@@ -183,6 +185,11 @@ def build_route():
     return jsonify(build_search(moo.index))
 
 
+@app.route('/discover')
+def discover():
+    return serve_album(str(moo.index[0]), moo.index, moo.albums)
+
+
 @app.route('/format/<path:encoding>')
 def format_route(encoding):
     '''render albums with specified encoding'''
@@ -254,6 +261,135 @@ def img_alkey(alkey):
 #         return app.send_static_file('cover.png')
 
 
+@app.route('/list')
+def list_route():
+    '''
+    render playlists
+    '''
+    return render_template('playlist.html',
+                           emoji=lib.EMOJI,
+                           playlists=playlists.lists)
+
+
+@app.route('/list/<name>')
+def list_list(name):
+    try:
+        return render_template('playlist.html',
+                               emoji=lib.EMOJI,
+                               name=name,
+                               playlists={name: playlists.lists[name]})
+    except KeyError:
+        return redirect('/list')
+
+
+@app.route('/list/<path:source>')
+def list_source(source):
+    '''
+    render playlist forms for source album or track
+    '''
+    alkey = source
+    track = 1
+
+    if source.startswith('album'):
+        alkey = source.replace('album/', '')
+        source = 'track/1/' + alkey
+
+    if source.startswith('track'):
+        parts = source.split('/')
+        track = int(parts[1])
+        alkey = '/'.join(parts[2:])
+
+    path = os.path.join(moo.base, alkey)
+
+    if track:
+        meta = moo.metadata(path, track=track)
+    else:
+        meta = moo.metadata(path, single=True)
+
+    return render_template(
+        'playlist.html',
+        alkey=alkey,
+        emoji=lib.EMOJI,
+        metadata=meta,
+        playlists=playlists.lists,
+        source=source,
+        track=track)
+
+
+@app.route('/list-delete', methods=['POST'])
+def list_delete():
+    '''
+    delete playlist
+    '''
+    playlists.delete(request.form.get('playlist'))
+
+    if request.form.get('source'):
+        return redirect('/list/' + request.form.get('source'))
+
+    return redirect('/list')
+
+
+@app.route('/list-move', methods=['POST'])
+def list_move():
+    '''
+    reposition track in playlist
+    '''
+    data = dict(request.form)
+
+    del data['playlist']
+    del data['position']
+
+    playlists.move(int(request.form.get('position')),
+                   request.form.get('playlist'),
+                   data)
+
+    return redirect('/list/' + request.form.get('playlist'))
+
+
+@app.route('/list-put', methods=['POST'])
+def list_put():
+    '''
+    add track or album to a playlist
+    '''
+    data = dict(request.form)
+
+    del data['playlist']
+
+    playlists.put(request.form.get('playlist'), data)
+
+    return redirect('/list/' + request.form.get('source'))
+
+
+@app.route('/list-remove', methods=['POST'])
+def list_remove():
+    '''
+    remove source from playlist
+    '''
+    data = dict(request.form)
+
+    del data['playlist']
+
+    playlists.remove(request.form.get('playlist'), data)
+
+    return redirect('/list/' + request.form.get('playlist'))
+
+
+@app.route('/list-rename', methods=['POST'])
+def list_rename():
+    '''
+    rename playlist
+    '''
+    playlists.rename(request.form.get('old'),
+                     request.form.get('new'))
+
+    return redirect('/list/' + request.form.get('new'))
+
+
+@app.route('/meta/<path:source>')
+def meta_route(source):
+    return moo.metadata(os.path.join(moo.base, source))
+
+
 @app.route('/None')
 def none():
     '''render albums with None in a major metadata field'''
@@ -291,12 +427,86 @@ def new():
     return serve_album(str(ind[0]), ind, alb)
 
 
-@app.route('/play')
-def play():
+@app.route('/play/<name>', defaults={'index': 1})
+@app.route('/play/<name>/<index>')
+def play_list(name, index):
     '''
-    load all other /routes in an iframe for simultaneous play and browse
+    play playlist by name
     '''
-    return render_template("play.html")
+    tmp = playlists.template_data(moo, name, int(index))
+
+    return render_template('play.html',
+                           alkey=tmp['alkey'],
+                           data=tmp['data'],
+                           emoji=lib.EMOJI,
+                           index=int(index),
+                           mode='play',
+                           name=name,
+                           track=tmp['track'],
+                           playlist=playlists.lists[name])
+
+
+@app.route('/repeat/<name>', defaults={'index': 1})
+@app.route('/repeat/<name>/<index>')
+def repeat_list(name, index):
+    '''
+    play playlist by name
+    '''
+    tmp = playlists.template_data(moo, name, int(index))
+
+    return render_template('play.html',
+                           alkey=tmp['alkey'],
+                           data=tmp['data'],
+                           emoji=lib.EMOJI,
+                           index=int(index),
+                           mode='repeat',
+                           name=name,
+                           track=tmp['track'],
+                           playlist=playlists.lists[name])
+
+
+@app.route('/shuffle/<name>')
+def shuffle_list(name):
+    '''
+    redirect to random index
+    '''
+    playlist = playlists.lists[name]
+    tracks = [x for x in range(1, len(playlist) + 1)]
+    random.shuffle(tracks)
+    playlists.shuffle[name] = tracks
+
+    return redirect('/shuffle/' + name + '/' + str(random.choice(tracks)))
+
+
+@app.route('/shuffle/<name>/<index>')
+def shuffle_list_index(name, index):
+    '''
+    play playlist by name
+    '''
+    index = int(index)
+    tmp = playlists.template_data(moo, name, index)
+
+    playlist = playlists.lists[name]
+    pshuff = playlists.shuffle[name]
+
+    if pshuff and index in pshuff:
+        playlists.shuffle[name].remove(index)
+
+    if not pshuff:
+        tracks = [x for x in range(1,len(playlist) + 1)]
+        random.shuffle(tracks)
+        playlists.shuffle[name] = tracks
+
+    return render_template('play.html',
+                           alkey=tmp['alkey'],
+                           data=tmp['data'],
+                           emoji=lib.EMOJI,
+                           index=int(index),
+                           mode='shuffle',
+                           name=name,
+                           track=tmp['track'],
+                           shuffle=playlists.shuffle[name],
+                           playlist=playlist)
 
 
 @app.route('/random')
@@ -314,6 +524,7 @@ def rando():
 @app.route('/search/<path:terms>', methods=['GET', 'POST'])
 def search_route(terms):
     '''render search results'''
+
     if request.method == 'POST':
         terms = request.form.get('search-input')
 

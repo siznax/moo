@@ -1,0 +1,57 @@
+<table id="playlist-audio-table">
+  <tr>
+    <td>
+      <b style="font-size: 24px">
+        <a href="/list/{{ name }}">{{ name }}</a>
+      </b>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <audio id="playlist-audio" controls autoplay>
+        <source src="{{ data.src }}" type="{{ data.type }}">
+      </audio>
+    </td>
+  </tr>
+
+
+  <tr id="playlist-audio-track">
+    <td>
+      <img alt="playlist cover" width="24" height="24"
+           src="/img{{ alkey }}">
+      <a href="/{{ track.source }}" target="_blank">
+        <i>{{ track.title }}</i></a>
+      &mdash;
+      <a href="/artist/{{ track.artist }}" target="_blank">
+        {{ track.artist }}</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <div id="playlist-audio-controls">
+        {% if request.path.startswith('/shuffle') %}
+        <span style="filter: grayscale(1)">
+          {{ emoji.shuffle | safe }}</span>
+        {% else %}
+        <a href="#" onclick="gotoShuffle()" 
+           title="Shuffle">{{ emoji.shuffle | safe }}</a>
+        {% endif %}
+        <a href="#" onclick="gotoPrev()">
+          {{ emoji.prev | safe }}</a>
+        <b style="margin-right: 4px">
+          {{ index }} / {{ playlist | length }}</b>
+        <a href="#" onclick="gotoNext()">
+          {{ emoji.next | safe }}</a>
+        {% if request.path.startswith('/repeat') %}
+        <span style="filter: grayscale(1)">
+          {{ emoji.repeat | safe }}</span>
+        {% else %}
+        <a href="#" onclick="gotoRepeat()">
+          {{ emoji.repeat | safe }}</a>
+        {% endif %}
+      </div>
+    </td>
+  </tr>
+</table>

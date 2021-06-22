@@ -35,6 +35,22 @@
     <title>/find: {{ request.path.split('/')[-1] }}</title>
     {% endif %}
 
+    {% if request.path == '/list' %}
+    <title>Playlists</title>
+    {% endif %}
+
+    {% if request.path.startswith('/list/') %}
+    <title>{{ request.path.split('/')[-1] }} playlist</title>
+    {% endif %}
+
+    {% if request.path.startswith('/play/')
+       or request.path.startswith('/shuffle/') %}
+    <title>
+      {{ request.path.split('/')[-2] }}
+      ({{ request.path.split('/')[-3] }})
+    </title>
+    {% endif %}
+
     {% if request.path == "/new" %}
     <title>New albums</title>
     {% endif %}
@@ -66,16 +82,16 @@
     {% endif %}
 
   </head>
-  <body onload="init({{ config.VERSION }})" class="dark">
+  <body onload="init()" class="dark">
 
     {% block body %}{% endblock %}
 
-    {% if "admin" not in request.path %}
-    <script src="/static/js/audio.js"></script>
+    {% if not request.path.startswith("/admin") %}
+    <script src="/static/js/layout.js"></script>
     {% endif %}
 
      {% if request.path.startswith('/album')
-       or request.path.startswith('/track') %}
+        or request.path.startswith('/track') %}
     <script src="/static/js/clock.js"></script>
     <script src="/static/js/keyboard.js"></script>
     {% endif %}

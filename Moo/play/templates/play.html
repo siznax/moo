@@ -1,0 +1,55 @@
+
+{% extends "layout.html" %}
+
+{%- block body -%}
+
+<link rel="stylesheet" href="/static/playlist.css">
+
+{% include "search-form.html" %}
+
+{% include "playlist-control.html" %}
+
+{% include "playlist-audio.html" %}
+
+<div id="playlist-list">
+  <table id="playlist-list-table">
+    {% for item in playlist %}
+    {%- if index == loop.index -%}
+    <tr style="font-weight: bold">
+    {%- else -%}
+    <tr>
+    {%- endif -%}
+      <td>
+        {%- if index == loop.index -%}
+        <span id="playlist-cursor">&rarr;</span>
+        {% else %}
+        &nbsp;
+        {%- endif -%}
+      </td>
+      <td style="text-align: right">
+        {{ loop.index }}.
+      </td>
+      <td>
+        {% if shuffle %}
+        {% if loop.index in shuffle %}
+        <a href="{{ loop.index }}"><i>{{ item.title }}</i></a>
+        {% else %}
+        <i>{{ item.title }}</i>
+        {% endif %}
+        {% else %}
+        <a href="{{ loop.index }}"><i>{{ item.title }}</i></a>
+        {% endif %}
+      </td>
+      <td>{{ item.artist }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% include "footer.html" %}
+
+<script src="/static/js/playlist.js"></script>
+
+{%- endblock -%}
+
+

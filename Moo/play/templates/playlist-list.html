@@ -1,0 +1,103 @@
+<a name="{{ name | lower }}"></a>
+
+<div><b style="font-size: 24px">{{ name }}</b></div>
+
+<div><i>{{ playlists[name] | length }} tracks</i></div>
+
+<div class="listing-dialog">
+  <span class="btn">
+    <form method="GET" action="/play/{{ name }}/1">
+      <input type="submit" value="play">
+    </form>
+  </span>
+
+  <span class="btn">
+    <form method="GET" action="/shuffle/{{ name }}">
+      <input type="submit" value="shuffle">
+    </form>
+  </span>
+
+  <span class="btn">
+    <form method="GET" action="/repeat/{{ name }}">
+      <input type="submit" value="repeat">
+    </form>
+  </span>
+
+  <span class="btn" style="margin-left: 8px">
+    <form method="POST" action="/list-rename">
+      <input type="hidden" name="source" value="{{ source }}">
+      <input type="hidden" name="old" value="{{ name }}">
+      <input type="text" size="12" name="new" placeholder="new name"
+             required>
+      <input type="submit" value="rename">
+    </form>
+  </span>
+
+  <span class="btn" style="margin-left: 8px">
+    <form method="POST" action="/list-delete"
+          onsubmit="return window.confirm('Delete {{ name }}?');">
+      <input type="hidden" name="source" value="{{ source }}">
+      <input type="hidden" name="playlist" value="{{ name }}">
+      <input type="submit" value="delete"
+             style="border: 2px solid crimson; background-color:
+                    crimson; color: white; border-radius: 4px;">
+    </form>
+  </span>
+</div>
+
+{%- for name in playlists | sort -%}
+<div class="listing">
+
+  <table class="listing-table">
+    {% for item in playlists[name] %}
+    <tr>
+      <td rowspan="2" style="text-align: right">{{ loop.index }}.</td>
+      <td>
+        <i><a href="/{{ item.source }}">{{ item.title }}</a></i>
+        &mdash;
+        <a href="/artist/{{ item.artist }}">{{ item.artist }}</a>
+      </td>
+      <td>
+        <form method="POST" action="/list-move">
+          <input type="hidden" name="playlist" value="{{ name }}">
+          <input type="hidden" name="source" value="{{ item.source }}">
+          <input type="hidden" name="title" value="{{ item.title }}">
+          <input type="hidden" name="album" value="{{ item.album }}">
+          <input type="hidden" name="artist" value="{{ item.artist }}">
+          <input type="hidden" name="position" value="{{ loop.index - 1 }}">
+          <input type="submit" value="&#x25B2;">
+        </form>
+      </td>
+      <td>
+        <form method="POST" action="/list-move">
+          <input type="hidden" name="playlist" value="{{ name }}">
+          <input type="hidden" name="source" value="{{ item.source }}">
+          <input type="hidden" name="title" value="{{ item.title }}">
+          <input type="hidden" name="album" value="{{ item.album }}">
+          <input type="hidden" name="artist" value="{{ item.artist }}">
+          <input type="hidden" name="position" value="{{ loop.index + 1 }}">
+          <input type="submit" value="&#x25BC;">
+        </form>
+      </td>
+      <td style="text-align: right">
+        <form method="POST" action="/list-remove"
+              onsubmit="return window.confirm('Remove {{ item.title }}?');">
+          <input type="hidden" name="playlist" value="{{ name }}">
+          <input type="hidden" name="source" value="{{ item.source }}">
+          <input type="hidden" name="title" value="{{ item.title }}">
+          <input type="hidden" name="album" value="{{ item.album }}">
+          <input type="hidden" name="artist" value="{{ item.artist }}">
+          <input type="submit" value="remove">
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" style="padding-bottom: 4px">
+        <i>{{ item.album }}</i>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+</div>
+{%- endfor -%}

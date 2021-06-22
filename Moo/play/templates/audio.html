@@ -17,11 +17,16 @@
   </audio>
 
   <div id="track-controls">
-
-    <a href="#" onclick="gotoPrev()">{{ emoji.prev | safe }}</a>
-    <span id="track-number">{{ track.track }} / {{ metadata | length }}</span>
-    <a href="#" onclick="gotoNext()">{{ emoji.next | safe }}</a>
-
+    <a href="/list{{ request.path }}" target="_blank">
+      {{ emoji.playlist | safe }}</a>
+    <a href="#" onclick="gotoPrev()">
+      {{ emoji.prev | safe }}</a>
+    <span id="track-number">
+      {{ track.track }} / {{ metadata | length }}</span>
+    <a href="#" onclick="gotoNext()">
+      {{ emoji.next | safe }}</a>
+    <span style="filter: grayscale(1); opacity: 0.5; margin-left: 4px">
+      {{ emoji.heart | safe }}</span>
   </div>
 
 </div>

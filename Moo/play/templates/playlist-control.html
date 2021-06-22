@@ -1,0 +1,13 @@
+{%- if shuffle -%}
+<!-- <pre class="left">{{ shuffle | pprint }}</pre> -->
+{%- endif -%}
+
+<div id="playlist-control"
+     index="{{ index }}"
+     mode="{{ mode }}"
+     name="{{ name }}"
+     ntracks="{{ playlist | length }}"
+     {%- if shuffle -%}
+     shuffle="{{ shuffle | tojson }}"
+     {%- endif -%}>
+</div>

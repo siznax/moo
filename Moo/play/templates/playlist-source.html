@@ -1,0 +1,85 @@
+{%- if source -%}
+<div id="playlist-source" style="margin-bottom: 16px">
+
+  <table id="playlist-source-table">
+
+    <tr>
+      <td rowspan="8">
+        <img alt="{{ source }}" width="64" height="64"
+             align="top" src="/img/{{ alkey | urlencode }}">
+      </td>
+      <td><b>Title:</b></td>
+      <td><b>{{ metadata.title }}</b></td>
+    </tr>
+    <tr>
+      <td>Artist:</td>
+      <td>{{ metadata.artist }}</td>
+    </tr>
+    <tr>
+      <td>Album:</td>
+      <td><a href="/album/{{ alkey }}">{{ metadata.album }}</a></td>
+    </tr>
+    <tr>
+      <td>Track:</td>
+      <td>{{ track }}</td>
+    </tr>
+    <tr>
+      <td>Source:</td>
+      <td><a href="/{{ source }}">/{{ source }}</a></td>
+    </tr>
+
+    {% if playlists %}
+
+    <tr>
+      <td colspan="2">
+        <form method="POST" action="/list-put">
+          <input type="hidden" name="source" value="{{ source }}">
+          <input type="hidden" name="title" value="{{ metadata.title }}">
+          <input type="hidden" name="album" value="{{ metadata.album }}">
+          <input type="hidden" name="artist" value="{{ metadata.artist }}">
+          <select name="playlist">
+            {% for item in playlists | sort %}
+            <option value="{{ item }}">{{ item }}</option>
+            {% endfor %}
+          </select>
+          <input type="submit" value="append">
+        </form>
+      </td>
+    </tr>
+
+    {% endif %} 
+
+    <tr>
+      <td colspan="2">
+        <form method="POST" action="/list-put"
+              {% if not playlists %}style="margin-top: 8px"{% endif %}>
+          <input type="hidden" name="source" value="{{ source }}">
+          <input type="hidden" name="title" value="{{ metadata.title }}">
+          <input type="hidden" name="album" value="{{ metadata.album }}">
+          <input type="hidden" name="artist" value="{{ metadata.artist }}">
+          <input name="playlist" placeholder="new playlist" required>
+          <input type="submit" value="add">
+        </form>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+          {% for name in playlists | sort %}
+          {% for item in playlists[name] %}
+          {% if item.source == source %}
+          <div>
+            <span>&#x2713;</span>
+            <a href="/list/{{ name }}">{{ name }}</a>
+          </div>
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+
+  </table>
+
+</div>
+{%- endif -%}
