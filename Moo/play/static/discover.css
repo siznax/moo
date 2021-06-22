@@ -1,0 +1,16 @@
+#discover {
+  display: inline-block;
+  text-align: center;
+}
+
+#discover p {
+  display: inline-block;
+  width: 180px;
+  height: 180px;
+  padding: 16px;
+  float: left;
+  margin: 16px;
+  background-color: rgba(0,0,0,0.06);
+  border-radius: 8px;
+  text-align: left;
+}
