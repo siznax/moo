@@ -1,4 +1,7 @@
 #tracklist {
+    border: 2px solid rgba(0,0,0,0.01);
+    max-height: 40vh;
+
     margin: 8px;
     padding: 8px;
     background-color: rgba(0,0,0,0.05);
