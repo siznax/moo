@@ -47,3 +47,10 @@ div.album-card .encoding {
     padding-right: 4px;
     padding-bottom: 0px;
 }
+
+div#covers.discover div.album-card {
+    height: 80px;
+    padding: 16px;
+    background-color: rgba(0,0,0,0.06);
+    border-radius: 8px;
+}
