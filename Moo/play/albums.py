@@ -124,7 +124,7 @@ class MooAlbums:
 
         return sorted(albums, key=sort_key, reverse=True)
 
-    def metadata(self, album, single=False):
+    def metadata(self, album, single=False, track=None):
         '''
         returns metadata for an entire album from the album path,
         or for a single track if single is True
@@ -168,8 +168,14 @@ class MooAlbums:
                 return data
 
         out = parse_fnames(out)
+        tracks = sorted_tracks(out)
 
-        return sorted_tracks(out)
+        if track:
+            for num, item in enumerate(sorted(tracks)):
+                if num + 1 == track:
+                    return tracks[item]
+
+        return tracks
 
     def sorted_albums(self, sort_key, reverse=False):
         '''
