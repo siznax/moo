@@ -2,10 +2,6 @@
 
 var DEBUG = false
 
-var audio = document.querySelector("audio")
-var control = document.getElementById('control')
-var title = document.getElementById('title')
-
 var smallBreakWidth = "640"
 var thinBreakHeight = "320"
 
@@ -26,6 +22,8 @@ function adjustLayout() {
     let coverDiv = document.getElementById('album-cover')
     let audioDiv = document.getElementById('album-audio')
 
+    if (!coverDiv || !audioDiv) { return true }
+
     if (window.innerWidth <= smallBreakWidth) {
         coverDiv.classList.add('small')
         audioDiv.classList.add('small')
@@ -41,76 +39,10 @@ function adjustLayout() {
 }
 
 
-function gotoNext() {
-    let next = control.getAttribute('next')
-    if (next > 0) { 
-        // title.classList.remove("glow")
-        // track.classList.remove("glow")
-        gotoTrack(next) 
-    }
-}
-
-function gotoPrev() {
-    let prev = control.getAttribute('prev')
-    if (prev > 0) { 
-        // title.classList.remove("glow")
-        // track.classList.remove("glow")
-        gotoTrack(prev) 
-    }
-}
-
-function gotoRandom() {
-    location = '/random'
-}
-
-function gotoRandomAlbum() {
-    let ralbum = control.getAttribute("ralbum")
-    let slash = ""
-    if (ralbum[0] != "/") {
-        slash = "/"
-    }
-    location = "/album" + slash + ralbum
-}
-
-function gotoTrack(num) {
-    let ntracks = parseInt(control.getAttribute('ntracks'))
-    if (parseInt(num) <= ntracks) {
-        let alkey = control.getAttribute("alkey")
-        location = "/track/" + num + "/" + alkey + "#" + num
-    }
-}
-
-
 function hide(id) {
     elm = document.getElementById(id)
     elm.style.display = "none"
     elm.style.visibility = "hidden"
-}
-
-
-function init(version) {
-    if (audio) {
-        adjustLayout()
-        audio.addEventListener("ended", gotoNext)
-    }
-    window.onresize = adjustLayout
-    console.log('Moo ' + version)
-}
-
-
-function playOrPause() {
-    if (audio) {
-        if (audio.paused) {
-            audio.play()
-        } else {
-            audio.pause()
-        }
-    }
-}
-
-
-function playRandomTrack() {
-    gotoTrack(control.getAttribute("rtrack"))
 }
 
 
@@ -119,7 +51,6 @@ function show(id) {
     elm.style.display = "block"
     elm.style.visibility = "visible"
 }
-
 
 function toggle(id) {
 
@@ -176,3 +107,10 @@ function toggle_hidden(id) {
     }
 
 }
+
+
+adjustLayout()
+window.onresize = adjustLayout
+
+console.log('Moo')
+
