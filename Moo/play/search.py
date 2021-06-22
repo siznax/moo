@@ -32,7 +32,7 @@ class MooSearch:
         art = dict()
         trk = list()
 
-        if not terms:
+        if not terms or not self.index:
             return alb, art, trk
 
         for entry in self.index.get('results'):

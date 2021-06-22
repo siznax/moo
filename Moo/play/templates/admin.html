@@ -2,9 +2,9 @@
 
 {% block body %}
 
-<h1>{{ emoji.app | safe }} moo</h1>
+{% include "search-form.html" %}
 
-<p><i>your music in your browser</i></p>
+<br/>
 
 <div id="base" class="admin-box">
 <h3>Base</h3>
@@ -17,10 +17,14 @@
     <td><b>Albums</b></td>
     <td>{{ "{:,}".format(albums | length) }} (from file system)</td>
   </tr>
+
+  {% if sindex %}
   <tr>
     <td><b>Tracks</b></td>
-    <td>{{ "{:,}".format(sindex.length) }} (from search build)</td>
+    <td>{{ "{:,}".format(sindex.length) }} (from search index)</td>
   </tr>
+  {% endif %}
+
 </table>
 <p>
   {{ emoji.run | safe }}
@@ -31,9 +35,7 @@
 <br>
 
 {% include "search-admin.html" %}
-<br>
 
-{% include "tips.html" %}
 <br>
 
 <div id="config" class="admin-box">
@@ -41,6 +43,12 @@
   <pre class="left">{{ config | pprint }}</pre>
 </div>
 
+{% include "tips.html" %}
+
+<br>
+
 {% include "footer.html" %}
+
+<div style="height: 16px"></div>
 
 {% endblock %}

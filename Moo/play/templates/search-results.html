@@ -8,6 +8,8 @@
 
 <link rel="stylesheet" href="/static/counts.css">
 
+{% if albums or artists or tracks %}
+
 <div>Search results for "{{ terms }}"</div>
 
 <div style="margin: 16px">
@@ -59,7 +61,7 @@
       <th>Album</th>
       <th>Artist</th>
     </tr>
-    {% for entry in tracks | sort %}
+    {% for entry in tracks %}
     <tr>
       <td><i><a href="/track/{{ entry[4] }}{{ entry[0] | urlencode }}">{{ entry[3] }}</a></i></td>
       <td><a href="/album{{ entry[0] }}">{{ entry[1] }}</a></td>
@@ -70,6 +72,14 @@
 </div>
 {% endif %}
 
+{% else %}
+
+<div>
+  Nothing found!
+  <p>Check the <a href="/admin">search index?</p>
+</div>
+
+{% endif %}
 
 {% endif %}
 

@@ -10,6 +10,8 @@
       <td>{{ (ages.new / 60) | int }} minutes</td>
     </tr>
 
+    {% if ages.search %}
+
     <tr>
       <td>Search age:</td>
       <td>{{ (ages.search / 86400) | int }} days</td>
@@ -17,26 +19,34 @@
       <td>{{ (ages.search / 60) | int }} minutes</td>
     </tr>
 
+    {% endif %}
+
+    {% if updated %}
     <tr>
       <td>Search build:</td>
       <td colspan="3">{{ updated.strftime("%c") }}</td>
     </tr>
+    {% endif %}
 
+    {% if sindex %}
     <tr>
       <td>Build time:</td>
       <td colspan="3">{{ "{:,}".format(sindex.seconds) }} seconds</td>
     </tr>
-
     <tr>
       <td>Build tracks:</td>
       <td colspan="3">{{ "{:,}".format(sindex.length) }}</td>
     </tr>
+    {% else %}
+    <tr>
+      <td colspan="4" style="text-align: center">SEARCH INDEX NOT FOUND</td>
+    </tr>
+    {% endif %}
 
     <tr>
       <td>Build tasks:</td>
       <td colspan="3">{{ tasks }}</td>
     </tr>
-
   </table>
 
   <p>

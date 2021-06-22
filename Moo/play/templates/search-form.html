@@ -3,42 +3,72 @@
 <form id="search-form" class="box" name="search"
       action="/search" method="POST">
 
-  <span style="margin-left: 16px"><a href="/">{{ 
-      emoji.app | safe }} Moo</a></span>
-
-  <span>
-  {% if request.path == "/random" %}
-  {{ emoji.random | safe }} <b>Random</b>
-  {% else %}
-  <a href="/random">{{ emoji.random | safe }} Random</a>
-  {% endif %}
+  <span style="margin-left: 16px">
+    {% if request.path == '/' %}
+    {{ emoji.app | safe }}&nbsp;<b>Albums</b>
+    {% else %}
+    <a href="/">{{ emoji.app | safe }}</a>
+    {% endif %}
   </span>
 
   <span>
-  {% if request.path == "/new" %}
-  {{ emoji.new | safe }} <b>New</b>
-  {% else %}
-  <a href="/new">{{ emoji.new | safe }} New</a>
-  {% endif %}
+    {% if request.path == '/list' %}
+    {{ emoji.playlist | safe }}&nbsp;<b>Playlists</b>
+    {% else %}
+    <a href="/list">{{ emoji.playlist | safe }}</a>
+    {% endif %}
   </span>
 
   <span>
-  {% if request.path == "/history" %}
-  {{ emoji.history | safe }} <b>History</b>
-  {% else %}
-  <a href="/history">{{ emoji.history | safe }} History</a>
-  {% endif %}
+    {% if request.path == "/new" %}
+    {{ emoji.new | safe }}&nbsp;<b>New</b>
+    {% else %}
+    <a href="/new">{{ emoji.new | safe }}</a>
+    {% endif %}
   </span>
 
-  <input
-     id="search-input"
-     name="search-input"
-     placeholder="{{ terms or 'terms'}}"
-     type="search"></input> <span
-     style="cursor: pointer"
-     onclick="document.search.submit()">{{ emoji.search | safe }}</span>
+  <span>
+    {% if request.path == "/history" %}
+    {{ emoji.history | safe }}&nbsp;<b>History</b>
+    {% else %}
+    <a href="/history">{{ emoji.history | safe }}</a>
+    {% endif %}
+  </span>
 
   <span>
-    <a class="emoji" href="/admin">{{ emoji.admin | safe }}</a></span>
+    {% if request.path == "/discover" %}
+    {{ emoji.discover | safe }}&nbsp;<b>Discover</b>
+    {% else %}
+    <a href="/discover">{{ emoji.discover | safe }}</a>
+    {% endif %}
+  </span>
+
+  <span>
+    {% if request.path == "/admin" %}
+    {{ emoji.admin | safe }}&nbsp;<b>Admin</b>
+    {% else %}
+    <a class="emoji" href="/admin">{{ emoji.admin | safe }}</a>
+    {% endif %}
+  </span>
+
+  <div style="display: inline-block; white-space: nobreak">
+    <input
+      id="search-input"
+      name="search-input"
+      placeholder="{{ terms or 'terms'}}"
+      type="search"></input>
+    <span 
+      style="cursor: pointer"
+      onclick="document.search.submit()">
+      {{ emoji.search | safe }}</span>
+  </div>
+
+  <span>
+    {% if request.path == "/random" %}
+    {{ emoji.random | safe }}&nbsp;<b>Random</b>
+    {% else %}
+    <a href="/random">{{ emoji.random | safe }}</a>
+    {% endif %}
+  </span>
 
 </form>
