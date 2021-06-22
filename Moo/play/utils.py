@@ -12,7 +12,10 @@ def file_age(filepath):
     '''
     returns seconds since filepath modified (mtime)
     '''
-    return int(time.time() - os.path.getmtime(filepath))
+    if os.path.exists(filepath):
+        return int(time.time() - os.path.getmtime(filepath))
+    else:
+        return None
 
 
 def hours_minutes(seconds, colons=False):
