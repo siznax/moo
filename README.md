@@ -43,9 +43,5 @@ moo Search
 
 ![](https://raw.githubusercontent.com/siznax/moo-img/main/moo-Search.png)
 
-moo Admin
-
-![](https://raw.githubusercontent.com/siznax/moo-img/main/moo-Admin.png)
-
 
 @siznax
