@@ -13,7 +13,7 @@ div#recent {
     overflow-y: hidden;
     white-space: nowrap;
 
-    background-color: rgba(0,0,0,0.1);
+    background-color: rgba(0,0,0,0.05);
     border-radius: 96px;
 }
 
