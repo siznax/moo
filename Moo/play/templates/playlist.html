@@ -18,6 +18,12 @@
 
 {% else %}
 
+{% if not playlists %}
+<div style="padding: 16px">
+  Click {{ emoji.playlist | safe }} on any track to add it to a playlist.
+</div>
+{% endif %}
+
 <div id="playlist-buttons">
   {%- for key in playlists | sort -%}
   <a class="button" 
