@@ -54,9 +54,9 @@ def before_request():
 
 
 @app.errorhandler(404)
-def handle_404(err):
+def handle_404(msg):
     '''render custom 404'''
-    return render_template('404.html', emoji=lib.EMOJI), 404
+    return render_template('404.html', emoji=lib.EMOJI, message=msg), 404
 
 
 @app.route('/')
@@ -225,6 +225,9 @@ def history():
 
     for entry in lib.get_history(base, app.config['HISTORY']):
         ind.append(os.path.join(base, entry[1:]))
+
+    if not ind:
+        abort(404, 'There is no history, yet.')
 
     ind.reverse()
 
@@ -547,6 +550,7 @@ def track_route(tnum, alkey):
 
     try:
         alb = moo.subset('genre', moo.albums[alkey]['genre'])
+
         return serve_album(alkey, list(alb.keys()), alb, tnum)
 
     except FileNotFoundError:
@@ -689,13 +693,15 @@ def write_history(alkey, maxlen=1000):
     '''
     write album or track digest to a HISTORY file when accessed
     '''
+    fname = app.config['HISTORY']
     alkey = alkey.replace(app.config['BASE'], '')
     tmp = list()
 
-    with open('HISTORY') as _:
-        for line in _:
-            if alkey not in line:
-                tmp.append(line.strip())
+    if os.path.exists(fname):
+        with open(fname) as _:
+            for line in _:
+                if alkey not in line:
+                    tmp.append(line.strip())
 
     if not tmp:
         tmp.append(alkey)
@@ -705,7 +711,7 @@ def write_history(alkey, maxlen=1000):
 
     tmp = tmp[-maxlen:]
 
-    with open('HISTORY', 'w') as _:
+    with open(fname, 'w') as _:
         for key in tmp:
             _.write(key + "\n")
 
