@@ -5,8 +5,6 @@ Your music in your browser
 
 ![](https://raw.githubusercontent.com/siznax/moo-img/main/moo.png)
 
-<i>More example screen shots below</i>
-
 moo (wide)
 
 ![](https://raw.githubusercontent.com/siznax/moo-img/main/moo-wide.png)
