@@ -33,13 +33,13 @@ moo History
 
 ![](https://raw.githubusercontent.com/siznax/moo-img/main/moo-History.png)
 
-moo Discover
-
-![](https://raw.githubusercontent.com/siznax/moo-img/main/moo-Discover.png)
-
 moo Search
 
 ![](https://raw.githubusercontent.com/siznax/moo-img/main/moo-Search.png)
+
+moo Discover
+
+![](https://raw.githubusercontent.com/siznax/moo-img/main/moo-Discover.png)
 
 
 @siznax
