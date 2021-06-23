@@ -1,7 +1,7 @@
 {%- if history -%}
-<div style="margin: 0px 32px 32px 32px">
+<div style="margin: 0px 32px;">
 
-  <div id="recent">
+  <div id="recent" style="display: inline-block">
     {%- for album in history | reverse -%}
     <a href="/album{{ album | urlencode }}"
        ><img
