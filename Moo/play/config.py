@@ -4,21 +4,22 @@ Moo config
 
 AUTHOR = 'siznax'
 PACKAGE = 'moo'
-VERSION = '0.3'
+VERSION = '0.4'
 WWW = 'https://github.com/siznax/moo'
 
 BASEFILE = 'BASE'
-HISTORY = 'HISTORY'
 SINDEX = 'search.json'
+HISTORY = 'HISTORY'
+PLAYLISTS = 'playlists.json'
 
 ARTIST_BUTTONS = {
-    # "label": "artist",
+    # 'nickname': 'Artist',
 }
 
 GENRE_BUTTONS = [
-    "Blues", "Classical", "Hip-Hop", "Jazz", "Punk", "R&B", "Rock", "Soul"
+    'Blues', 'Classical', 'Jazz', 'R&B'
 ]
 
 STATION_BUTTONS = {
-    # "label": "href",
+    # 'station': 'URL/',
 }
