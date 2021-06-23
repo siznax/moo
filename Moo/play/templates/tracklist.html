@@ -27,7 +27,8 @@
       </td>
 
       <td class="tracklist-title">
-        {% if metadata[key].src == track.src %}
+        {%- if metadata[key].src == track.src
+            and request.path.startswith("/track") -%}
 
         <b class="{% if current %}clr-a{% endif %}">
           {{ metadata[key].title }}</b>
